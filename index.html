@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>御花のお願い｜小垣内区参拾人組</title>
+<title>御花のお願い｜小垣内参拾人組</title>
 <meta name="description" content="大阪府泉南郡熊取町・小垣内区のだんじり祭を支える御花を受け付けています。粗品つきの御花と、オンライン寄付「オガファン」の2つの方法があります。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,52 +22,28 @@
   }
   *,*::before,*::after{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
-  body{
-    margin:0;
-    background:var(--kinari);
-    color:var(--sumi);
-    font-family:var(--gothic);
-    font-size:16px;
-    line-height:1.9;
-  }
+  body{margin:0;background:var(--kinari);color:var(--sumi);font-family:var(--gothic);font-size:16px;line-height:1.9}
   .wrap{max-width:40rem;margin:0 auto;padding:0 1.5rem}
 
   /* ---- 幟（のぼり）風ヒーロー ---- */
   .nobori{background:var(--ai);color:var(--kinari);padding:3.5rem 1.5rem 3rem}
   .nobori-inner{max-width:40rem;margin:0 auto;display:flex;align-items:flex-start;gap:1.75rem}
   .tate{
-    writing-mode:vertical-rl;
-    font-family:var(--mincho);
-    font-weight:600;
-    font-size:clamp(1.9rem,7vw,2.6rem);
-    letter-spacing:.22em;
-    line-height:1.15;
-    margin:0;
-    padding-left:1.25rem;
-    border-left:2px solid var(--shu);
-    height:11.5em;
+    writing-mode:vertical-rl;font-family:var(--mincho);font-weight:600;
+    font-size:clamp(1.9rem,7vw,2.6rem);letter-spacing:.22em;line-height:1.15;
+    margin:0;padding-left:1.25rem;border-left:2px solid var(--shu);height:11.5em;
   }
   .nobori-sub{padding-top:.4rem}
   .nobori-sub p{margin:0 0 .9rem}
   .dantai{font-family:var(--mincho);font-size:1.05rem;letter-spacing:.08em}
   .nengo{color:#B9C6D6;font-size:.9rem;letter-spacing:.06em}
-  .hiduke{
-    margin-top:1.6rem;
-    border-top:1px solid rgba(247,244,236,.25);
-    padding-top:1rem;
-    font-size:.9rem;line-height:2.1;color:#DCE3EC;
-  }
+  .hiduke{margin-top:1.6rem;border-top:1px solid rgba(247,244,236,.25);padding-top:1rem;font-size:.9rem;line-height:2.1;color:#DCE3EC}
   .hiduke b{font-weight:500;color:var(--kinari);margin-right:.6em}
 
   /* ---- 本文共通 ---- */
   main{padding:3rem 0 0}
   .block{margin-bottom:3rem}
-  h2{
-    font-family:var(--mincho);
-    font-size:1.3rem;font-weight:600;letter-spacing:.06em;
-    margin:0 0 1rem;padding-bottom:.5rem;
-    border-bottom:1px solid var(--keisen);
-  }
+  h2{font-family:var(--mincho);font-size:1.3rem;font-weight:600;letter-spacing:.06em;margin:0 0 1rem;padding-bottom:.5rem;border-bottom:1px solid var(--keisen)}
   h3{font-family:var(--mincho);font-size:1.05rem;font-weight:600;margin:1.8rem 0 .6rem}
   p{margin:0 0 1.1rem}
   .lead{font-size:1.05rem}
@@ -75,12 +51,16 @@
   li{margin-bottom:.4rem}
   a{color:var(--ai)}
 
-  /* ---- 2本立ての選択 ---- */
-  .futatsu{
-    display:flex;gap:0;margin:0 0 1rem;
-    border:1px solid var(--keisen);
-    font-size:.92rem;
+  /* ---- 悪循環 ---- */
+  .junkan{
+    font-family:var(--mincho);font-size:1rem;line-height:2.2;
+    border-left:2px solid var(--shu);padding:.2rem 0 .2rem 1.1rem;margin:0 0 1.2rem;
   }
+  .junkan span{display:block;color:var(--usuzumi)}
+  .junkan span::before{content:"↓";display:inline-block;width:1.4em;color:var(--shu)}
+
+  /* ---- 2本立て ---- */
+  .futatsu{display:flex;gap:0;margin:0 0 1rem;border:1px solid var(--keisen);font-size:.92rem}
   .futatsu div{flex:1;padding:1rem 1.1rem;line-height:1.7}
   .futatsu div + div{border-left:1px solid var(--keisen)}
   .futatsu b{display:block;font-family:var(--mincho);font-size:1.05rem;margin-bottom:.3rem}
@@ -91,43 +71,28 @@
 
   /* ---- 御花（粗品あり） ---- */
   .ohana{padding:2.75rem 0 2.5rem;border-top:3px double var(--ai);border-bottom:1px solid var(--keisen)}
-  .dan{
-    display:flex;align-items:baseline;gap:1.25rem;
-    padding:.85rem 0;border-bottom:1px solid var(--keisen);flex-wrap:wrap;
-  }
+  .dan{display:flex;align-items:baseline;gap:1.25rem;padding:.85rem 0;border-bottom:1px solid var(--keisen);flex-wrap:wrap}
   .dan:first-of-type{border-top:1px solid var(--keisen)}
-  .gaku{
-    font-family:var(--mincho);
-    font-size:1.35rem;font-weight:600;
-    font-variant-numeric:tabular-nums;
-    white-space:nowrap;min-width:6.5em;
-  }
+  .gaku{font-family:var(--mincho);font-size:1.35rem;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;min-width:6.5em}
   .gaku small{font-size:.9rem;font-weight:400;margin-left:.1em}
   .soshina{flex:1 1 11rem;font-size:.95rem;color:var(--usuzumi)}
-
-  .renraku{
-    background:#EFEADC;
-    border-left:3px solid var(--shu);
-    padding:1.1rem 1.25rem;margin-top:1.75rem;font-size:.94rem;
-  }
-  .renraku p:last-child{margin-bottom:0}
+  ul.chuki{list-style:none;padding:0;margin:.4rem 0 0;font-size:.9rem;color:var(--usuzumi)}
+  ul.chuki li{padding-left:1.4em;text-indent:-1.4em;margin-bottom:.3rem}
+  ul.chuki li::before{content:"※";display:inline-block;width:1.4em;text-indent:0;color:var(--shu)}
+  .renraku{background:#EFEADC;border-left:3px solid var(--shu);padding:1.1rem 1.25rem;margin-top:1.75rem;font-size:.94rem}  .renraku p:last-child{margin-bottom:0}
   .renraku a{word-break:break-all}
 
   /* ---- オガファン ---- */
   .ogafan{background:var(--ai);color:var(--kinari);padding:3rem 0 2.75rem;margin-top:3rem}
   .ogafan h2{border-bottom-color:rgba(247,244,236,.3)}
-  .ogafan .dan{border-bottom-color:rgba(247,244,236,.22);align-items:center}
+  .ogafan .dan{border-bottom-color:rgba(247,244,236,.22);align-items:center;padding:1.25rem 0}
   .ogafan .dan:first-of-type{border-top-color:rgba(247,244,236,.22)}
   .ogafan .soshina{color:#C7D2DF}
-  .ogafan .kome{font-size:.88rem;color:#B9C6D6;margin-top:1.5rem}
-  .btn{
-    display:inline-block;background:var(--shu);color:#fff;
-    text-decoration:none;font-size:.92rem;font-weight:500;letter-spacing:.04em;
-    padding:.7rem 1.4rem;border-radius:2px;white-space:nowrap;
-  }
+  .taisho{font-family:var(--mincho);font-size:.95rem;color:var(--kinari);display:block;margin-bottom:.15rem;letter-spacing:.06em}
+  .kome{font-size:.88rem;color:#B9C6D6;margin-top:1.5rem}
+  .btn{display:inline-block;background:var(--shu);color:#fff;text-decoration:none;font-size:.92rem;font-weight:500;letter-spacing:.04em;padding:.7rem 1.4rem;border-radius:2px;white-space:nowrap}
   .btn:hover{background:#9C2723}
   .btn:focus-visible{outline:2px solid var(--kinari);outline-offset:3px}
-  .ogafan .dan{padding:1.25rem 0}
 
   /* ---- 情報リスト ---- */
   dl.joho{margin:0;font-size:.94rem}
@@ -135,10 +100,15 @@
   dl.joho dt{min-width:7em;color:var(--usuzumi)}
   dl.joho dd{margin:0;flex:1 1 14rem}
 
-  footer{
-    background:var(--ai-fuka);color:#B9C6D6;
-    padding:2.5rem 0;font-size:.85rem;line-height:1.9;
-  }
+  /* ---- リンク集 ---- */
+  ul.link{list-style:none;padding:0;margin:0}
+  ul.link li{border-bottom:1px solid var(--keisen);margin:0}
+  ul.link a{display:block;padding:.85rem 0;text-decoration:none;color:var(--sumi)}
+  ul.link a:hover b{color:var(--shu)}
+  ul.link b{font-family:var(--mincho);font-weight:600;font-size:1rem}
+  ul.link span{display:block;font-size:.88rem;color:var(--usuzumi);line-height:1.7}
+
+  footer{background:var(--ai-fuka);color:#B9C6D6;padding:2.5rem 0;font-size:.85rem;line-height:1.9}
   footer .dantai{color:var(--kinari);display:block;margin-bottom:.5rem}
   footer a{color:#DCE3EC}
 
@@ -157,8 +127,8 @@
   <div class="nobori-inner">
     <h1 class="tate">御花のお願い</h1>
     <div class="nobori-sub">
-      <p class="dantai">小垣内区 参拾人組</p>
-      <p class="nengo">令和八年 秋季例大祭</p>
+      <p class="dantai">小垣内参拾人組</p>
+      <p class="nengo">令和八年度だんじり祭</p>
       <div class="hiduke">
         <div><b>試験曳き</b>10月4日（日）</div>
         <div><b>本曳き</b>10月10日（土）・11日（日）</div>
@@ -170,19 +140,31 @@
 <main>
 
   <div class="wrap block">
-    <p class="lead">小垣内区参拾人組は、大阪府泉南郡熊取町・小垣内区のだんじりを曳く組です。秋の例大祭に向けて一年をかけて寄合を重ね、だんじりと祭礼の場を整えています。</p>
+    <p class="lead">小垣内参拾人組は、大阪府泉南郡熊取町小垣内区のだんじり祭で、主に後梃子、前梃子、大工方を担当しています。</p>
     <p>この祭を続けていくための費用を、御花としてお願いしています。</p>
+  </div>
+
+  <div class="wrap block">
+    <h2>なぜ御花をお願いするのか</h2>
+    <p>参加人数が年々減っています。そしてこれは、放っておいても止まりません。</p>
+    <div class="junkan">
+      参加者が減る
+      <span>1人あたりの負担額が増える</span>
+      <span>負担を理由にさらに参加者が減る</span>
+    </div>
+    <p>この循環を断ち切るには、参加する人の金銭的な負担を下げるしかありません。「参加したい」を「参加できた」に変えるための後押しとして、皆さまの応援をお願いしています。</p>
+    <p>人が増えれば場に活気が戻ります。その熱気はこども達にも伝わり、貴重な体験として残ります。</p>
   </div>
 
   <div class="wrap block">
     <h2>御花の使いみち</h2>
     <ul>
-      <li>曳行に必要な備品（綱・提灯・法被・幟などの調達と修繕）</li>
-      <li>祭礼当日の警備と安全対策</li>
-      <li>詰所の運営</li>
-      <li>祭礼の記録映像の制作と公開</li>
+      <li>祭礼参加会費の減額</li>
+      <li>練習中の給水と備品</li>
+      <li>祭礼中の飲食費</li>
+      <li>貸し出し法被やパッチの購入と修繕</li>
+      <li>だんじりの保管にかかる費用</li>
     </ul>
-    <p>※実際の使途に合わせて書き換えてください。</p>
   </div>
 
   <div class="wrap block">
@@ -213,12 +195,16 @@
 
       <h3>お渡しの方法</h3>
       <p>参拾人組のメンバーに直接お声がけください。現金でお受けし、その場で粗品をお渡しします。</p>
+      <ul class="chuki">
+        <li>祭礼当日の受付は行いません。</li>
+        <li>オガファン（オンライン寄付）でのご支援分は、タオルお返しの対象外です。</li>
+      </ul>
 
       <div class="renraku">
         <p><strong>組の者に知り合いがいない場合</strong></p>
         <p>下記のいずれかにご連絡ください。こちらから受け渡しの方法をご案内します。</p>
         <p>
-          Instagram：<a href="#">＠アカウント名（DMをお送りください）</a><br>
+          Instagram：<a href="https://www.instagram.com/ogaito30">＠ogaito30</a>（DMをお送りください）<br>
           メール：<a href="mailto:ogaito30ningumi@gmail.com">ogaito30ningumi@gmail.com</a>
         </p>
       </div>
@@ -229,16 +215,16 @@
     <div class="wrap">
       <h2>オガファン（オンライン寄付）</h2>
       <p>クレジットカードで、その場で御花を出していただけます。遠方にお住まいの方や、組に知り合いのない方もご利用いただけます。</p>
-      <p>粗品のお渡しはありません。かわりに、ご希望の方のお名前を参拾人組のYouTube動画のエンドクレジットに掲載します。</p>
+      <p>粗品のお渡しはありません。かわりに、ご希望の方のお名前を参拾人組のYouTube総集編のエンドクレジットに掲載します。</p>
 
       <div class="dan">
         <div class="gaku">500<small>円</small></div>
-        <div class="soshina">支援者一覧にお名前を掲載します</div>
+        <div class="soshina"><span class="taisho">個人の方</span>支援者一覧にお名前を掲載します</div>
         <a class="btn" href="#">この金額で出す</a>
       </div>
       <div class="dan">
         <div class="gaku">10,000<small>円</small></div>
-        <div class="soshina">お名前を大きく掲載します</div>
+        <div class="soshina"><span class="taisho">お店・事業者の方</span>店名・社名を大きく掲載します</div>
         <a class="btn" href="#">この金額で出す</a>
       </div>
 
@@ -249,6 +235,7 @@
   <div class="wrap block" style="margin-top:3rem">
     <h2>オンライン寄付について</h2>
     <dl class="joho">
+      <div><dt>寄付先</dt><dd>小垣内参拾人組（任意団体）</dd></div>
       <div><dt>決済方法</dt><dd>クレジットカード（Visa／Mastercard／JCB／American Express／Diners Club）</dd></div>
       <div><dt>決済代行</dt><dd>Stripe。カード情報はStripeの決済ページで処理され、参拾人組では取得も保管もしません。</dd></div>
       <div><dt>領収書</dt><dd>決済完了後、Stripeからご入力のメールアドレス宛に自動送信されます。</dd></div>
@@ -258,16 +245,19 @@
   </div>
 
   <div class="wrap block">
-    <h2>過去の祭礼映像</h2>
-    <p>参拾人組の活動と、これまでの祭礼の様子を公開しています。</p>
-    <p><a href="#">YouTubeチャンネルを見る</a></p>
+    <h2>活動を見る</h2>
+    <ul class="link">
+      <li><a href="https://www.instagram.com/ogaito30"><b>Instagram ＠ogaito30</b><span>寄合や練習の様子を随時投稿しています</span></a></li>
+      <li><a href="https://youtube.com/@channka-channel"><b>チャンカちゃんねる</b><span>過去の祭礼映像を公開しています</span></a></li>
+      <li><a href="#"><b>寄付の説明動画</b><span>手順をショート動画で説明しています</span></a></li>
+    </ul>
   </div>
 
 </main>
 
 <footer>
   <div class="wrap">
-    <span class="dantai">小垣内区 参拾人組</span>
+    <span class="dantai">小垣内参拾人組（任意団体）</span>
     大阪府泉南郡熊取町小垣内<br>
     <a href="mailto:ogaito30ningumi@gmail.com">ogaito30ningumi@gmail.com</a><br>
     （代表者名を記入してください）
