@@ -98,7 +98,7 @@ p {
   align-items: center;
   justify-content: center;
   gap: .5em;
-  min-height: 3.25rem;
+  min-height: 1rem;
   padding: .8rem 1.6rem;
   font-family: var(--gothic);
   font-weight: 700;
@@ -145,6 +145,22 @@ p {
   background: var(--enji-deep);
 }
 
+.btn-enji-line {
+  border: 1.5px solid rgba(110, 26, 38, .45);
+  color: var(--enji);
+}
+
+.btn-enji-line:hover {
+  background: var(--gofun);
+}
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-top: 1.75rem;
+}
+
 
 /* ---------- ヒーロー ---------- */
 
@@ -175,8 +191,8 @@ p {
   inset: 0;
   z-index: 1;
   background:
-    linear-gradient(90deg, rgba(67, 16, 26, .92) 0%, rgba(67, 16, 26, .55) 45%, rgba(67, 16, 26, .15) 100%),
-    linear-gradient(0deg, rgba(67, 16, 26, .85) 0%, transparent 40%);
+    radial-gradient(60% 55% at 50% 45%, rgba(67, 16, 26, .35) 0%, rgba(67, 16, 26, .72) 100%),
+    linear-gradient(0deg, rgba(67, 16, 26, .85) 0%, transparent 45%);
 }
 
 .hero-inner {
@@ -184,70 +200,99 @@ p {
   z-index: 2;
   width: min(100% - 3rem, 68rem);
   margin: auto;
-  padding: 5.5rem 0 3rem;
+  padding: 5.5rem 0 7rem;
   display: grid;
-  grid-template-columns: 1fr;
-  align-items: center;
+  justify-items: center;
+  text-align: center;
+  gap: clamp(1.8rem, 4vh, 3rem);
 }
 
 .hero-mark {
   display: flex;
-  align-items: flex-start;
-  gap: .9rem;
+  justify-content: center;
 }
 
 .hero-name {
-  height: clamp(13.5rem, 33vh, 25.5rem);
+  height: clamp(8.5rem, 26vh, 15rem);
   width: auto;
   max-width: none;
   margin: 0;
 }
 
-.hero-year {
-  font-family: var(--mincho);
-  font-size: 1.1rem;
-  letter-spacing: .35em;
-  margin: 0;
-  padding-top: .3rem;
-  opacity: .85;
-}
 
-.hero-copy h1 {
+/* 日程：ヒーロー内のミニマムな一行 */
+
+.hero-date-title {
   font-family: var(--mincho);
-  font-weight: 700;
-  font-size: clamp(1.7rem, 4.4vw, 2.9rem);
-  line-height: 1.5;
+  font-weight: 500;
+  font-size: .8rem;
+  letter-spacing: .34em;
+  text-indent: .34em;
+  line-height: 1;
   margin: 0 0 1rem;
-  letter-spacing: .04em;
+  color: rgba(255, 255, 255, .7);
 }
 
-.hero-copy p {
-  max-width: 28rem;
-  color: rgba(255, 255, 255, .86);
-}
-
-.hero-cta {
+.hero-date-list {
   display: flex;
   flex-wrap: wrap;
-  gap: .75rem;
-  margin-top: 1.75rem;
-}
-
-.hero-date {
-  display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
   gap: .3rem 2rem;
-  margin-top: 2rem;
-  padding-top: 1.1rem;
-  border-top: 1px solid rgba(255, 255, 255, .28);
-  font-size: .88rem;
-  color: rgba(255, 255, 255, .8);
+  margin: 0;
+  font-size: .95rem;
+  line-height: 1.7;
+  letter-spacing: .04em;
+  color: rgba(255, 255, 255, .92);
 }
 
 .hero-date b {
   font-weight: 500;
-  color: var(--shiro);
   margin-right: .7em;
+  color: rgba(255, 255, 255, .7);
+}
+
+
+/* スクロールを促すサイン */
+
+.hero-scroll {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 1.6rem;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: .7rem;
+  text-decoration: none;
+  color: rgba(255, 255, 255, .72);
+}
+
+.hero-scroll:hover {
+  color: var(--shiro);
+}
+
+.hero-scroll-label {
+  font-size: .62rem;
+  font-weight: 500;
+  letter-spacing: .3em;
+  text-indent: .3em;
+}
+
+.hero-scroll-line {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 3.5rem;
+  background: rgba(255, 255, 255, .25);
+  overflow: hidden;
+}
+
+.hero-scroll-line::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 40%;
+  background: currentColor;
 }
 
 .logo {
@@ -272,14 +317,34 @@ p {
     animation: rise 1.1s cubic-bezier(.2, .7, .1, 1) .2s forwards;
   }
 
-  .hero-copy {
+  .hero-date {
     opacity: 0;
     animation: fade .9s ease 1.05s forwards;
+  }
+
+  .hero-scroll {
+    opacity: 0;
+    animation: fade .9s ease 1.5s forwards;
+  }
+
+  .hero-scroll-line::after {
+    animation: scrolldown 2.2s cubic-bezier(.65, 0, .35, 1) infinite;
   }
 
   .hero-media {
     transform: scale(1.08);
     animation: settle 2.4s cubic-bezier(.2, .7, .1, 1) forwards;
+  }
+}
+
+@keyframes scrolldown {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  55%,
+  100% {
+    transform: translateY(250%);
   }
 }
 
@@ -299,6 +364,49 @@ p {
   to {
     transform: scale(1);
   }
+}
+
+
+/* ---------- リード（ヒーロー直下） ---------- */
+
+.lead {
+  padding: clamp(4rem, 9vw, 6.5rem) 0 clamp(3rem, 7vw, 5rem);
+}
+
+.lead-inner {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.lead h1 {
+  font-family: var(--mincho);
+  font-weight: 700;
+  font-size: clamp(1.8rem, 4.6vw, 3rem);
+  line-height: 1.55;
+  letter-spacing: .05em;
+  margin: 0 0 1.2rem;
+  color: var(--enji);
+}
+
+/* 縦書きの見出し：字の並びは上下中央、柱そのものは左右中央 */
+
+.lead h1.tate {
+  font-size: clamp(1.5rem, 3.4vw, 2.3rem);
+  line-height: 1.2;
+  letter-spacing: .12em;
+  text-indent: .12em;
+  text-align: center;
+  margin: 0 0 2rem;
+}
+
+.lead p {
+  color: var(--nezumi);
+  margin: 0;
+}
+
+.lead .cta-row {
+  justify-content: center;
 }
 
 
@@ -325,8 +433,9 @@ p {
   color: var(--enji);
 }
 
-.intro .ph {
-  aspect-ratio: 4/5;
+.intro-photo {
+  width: 100%;
+  height: auto;
 }
 
 
@@ -353,11 +462,20 @@ p {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 1rem;
+  align-content: start;
 }
 
-.yaku .ph {
-  aspect-ratio: 3/4;
+.yaku h3,
+.yaku p {
+  align-self: start;
+}
+
+.yaku-photo {
   grid-column: 1 / -1;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16/9;
+  object-fit: cover;
 }
 
 .yaku h3 {
@@ -373,6 +491,13 @@ p {
   font-size: .92rem;
   color: rgba(255, 255, 255, .85);
   margin: 0;
+}
+
+.yaku .yaku-note {
+  grid-column: 2;
+  margin-top: -.6rem;
+  font-size: .8rem;
+  color: rgba(255, 255, 255, .6);
 }
 
 
@@ -408,11 +533,17 @@ p {
   gap: .5rem;
 }
 
-.gallery .ph:first-child {
+.gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery img:first-child {
   grid-row: 1 / 3;
 }
 
-.gallery .ph:nth-child(4) {
+.gallery img:nth-child(4) {
   grid-column: 2 / 4;
 }
 
@@ -509,24 +640,36 @@ p {
 
 .tsukai-list {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 clamp(2rem, 5vw, 4rem);
   margin-top: 2.5rem;
   padding: 0;
   list-style: none;
 }
 
-.tsukai-list .ph {
-  aspect-ratio: 1;
-  margin-bottom: .75rem;
-  border-radius: 4px;
+.tsukai-list li {
+  display: flex;
+  align-items: baseline;
+  gap: .9rem;
+  padding: 1.15rem .2rem;
+  border-bottom: 1px solid var(--sen);
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.7;
 }
 
-.tsukai-list span {
-  font-weight: 500;
-  font-size: .92rem;
-  line-height: 1.6;
-  display: block;
+.tsukai-list li:nth-child(-n+2) {
+  border-top: 1px solid var(--sen);
+}
+
+.tsukai-list li::before {
+  content: "";
+  flex: none;
+  width: .45rem;
+  height: .45rem;
+  border-radius: 50%;
+  background: var(--enji);
+  transform: translateY(-.15em);
 }
 
 
@@ -622,8 +765,38 @@ p {
   white-space: nowrap;
 }
 
-.card-ohana .ph {
-  aspect-ratio: 16/9;
+/* 御花のお礼品：フェイス／バスの2枚並び */
+
+.towels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  margin-bottom: 1.6rem;
+  background: var(--sen);
+  border: 1px solid var(--sen);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.towels figure {
+  margin: 0;
+  background: var(--shiro);
+}
+
+.towels img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+}
+
+.towels figcaption {
+  padding: .6rem .8rem .8rem;
+  font-size: .78rem;
+  line-height: 1.5;
+  letter-spacing: .06em;
+  text-align: center;
+  color: var(--nezumi);
 }
 
 .card .chui {
@@ -687,6 +860,27 @@ p {
     animation: none;
     top: 0;
   }
+}
+
+/* 昨年の実績 */
+
+.jisseki {
+  margin: 0 0 1.5rem;
+  padding: .9rem 1rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, .12);
+  text-align: center;
+  font-size: .88rem;
+  line-height: 1.8;
+  letter-spacing: .04em;
+}
+
+.jisseki b {
+  font-family: var(--mincho);
+  font-weight: 700;
+  font-size: 1.6rem;
+  letter-spacing: .02em;
+  margin: 0 .1em;
 }
 
 .plan {
@@ -846,9 +1040,12 @@ p {
   overflow: hidden;
 }
 
-.closing .ph {
+.closing-bg {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   opacity: .45;
 }
 
@@ -871,7 +1068,7 @@ p {
   color: rgba(255, 255, 255, .85);
 }
 
-.closing .hero-cta {
+.closing .cta-row {
   justify-content: center;
 }
 
@@ -941,13 +1138,6 @@ footer .name {
     gap: 2.5rem;
   }
 
-  .yaku .ph {
-    aspect-ratio: 16/10;
-  }
-
-  .tsukai-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
 
   .shiranai {
     grid-template-columns: 1fr;
@@ -960,27 +1150,44 @@ footer .name {
   }
 
   .hero-inner {
-    grid-template-columns: 1fr;
-    align-items: end;
-    padding-bottom: 6.5rem;
-  }
-
-  .hero-mark {
-    gap: .3rem;
+    padding: 4.5rem 0 7.5rem;
   }
 
   .hero-name {
-    height: 11rem;
+    height: clamp(7.5rem, 22vh, 10rem);
   }
 
-  .hero-year {
-    padding: 0;
-    letter-spacing: .2em;
-    font-size: .85rem;
+  .hero-date p {
+    gap: .2rem;
+    flex-direction: column;
+    font-size: .9rem;
   }
 
-  .hero-cta .btn {
+  .cta-row .btn {
     flex: 1 1 100%;
+  }
+
+  .tsukai-list {
+    grid-template-columns: 1fr;
+  }
+
+  .tsukai-list li:nth-child(2) {
+    border-top: 0;
+  }
+
+  /* 決済CTAは横に並べず、金額・説明の下に全幅で置く */
+
+  .plan {
+    grid-template-columns: 1fr;
+    gap: .2rem;
+    padding: 1.3rem 0 1.5rem;
+  }
+
+  .plan .btn {
+    grid-column: 1;
+    grid-row: auto;
+    width: 100%;
+    margin-top: .9rem;
   }
 
   .gallery {
@@ -988,12 +1195,12 @@ footer .name {
     grid-template-rows: 12rem 9rem 9rem;
   }
 
-  .gallery .ph:first-child {
+  .gallery img:first-child {
     grid-column: 1 / 3;
     grid-row: auto;
   }
 
-  .gallery .ph:nth-child(4) {
+  .gallery img:nth-child(4) {
     grid-column: 1 / 3;
   }
 
