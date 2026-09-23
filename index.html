@@ -13,17 +13,11 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<!--
-  仮版（ワイヤー兼デザイン検証用）
-  ・.ph の箇所は写真／動画の差し替え位置。data-need に必要なカットを記載
-  ・数字の「〇〇」は実数に差し替え
-  ・Stripe支払いリンクは href="#" のまま（TODO）
--->
 <link rel="stylesheet" href="css/ogaito30.css">
 </head>
 <body>
 
-<!-- ==================== 1. ヒーロー ==================== -->
+<!-- ==================== ヒーロー ==================== -->
 <header class="hero">
   <a class="logo" href="#"><img src="img/sensu_wht.webp" width="800" height="800" alt="小垣内参拾人組"></a>
   <div class="hero-media" aria-hidden="true">
@@ -39,7 +33,7 @@
     </script>
   </div>
   <div class="hero-inner">
-    <div class="hero-mark"><img class="hero-name" src="img/ogaito_wht.webp" width="329" height="795" alt="小垣内"></div>
+    <img class="hero-name" src="img/ogaito_wht.webp" width="329" height="795" alt="小垣内">
     <div class="hero-date">
       <p class="hero-date-title">令和八年度日程</p>
       <p class="hero-date-list"><span><b>試験曳き</b>10月4日（日）</span><span><b>本曳き</b>10月10日（土）・11日（日）</span></p>
@@ -65,7 +59,7 @@
     </div>
   </section>
 
-  <!-- ==================== 2. 参拾人組について ==================== -->
+  <!-- ==================== 参拾人組について ==================== -->
   <section class="intro">
     <div class="wrap intro-grid">
       <div class="narrow">
@@ -76,7 +70,7 @@
     </div>
   </section>
 
-  <!-- 役割 -->
+  <!-- ==================== 三つの持ち場 ==================== -->
   <section class="yakuwari">
     <div class="wrap">
       <h2 class="midashi">参拾人組が担う、三つの持ち場。</h2>
@@ -101,7 +95,7 @@
     </div>
   </section>
 
-  <!-- ==================== 3. 人 ==================== -->
+  <!-- ==================== 人 ==================== -->
   <section class="hito">
     <div class="wrap">
       <div class="hito-head">
@@ -117,7 +111,7 @@
     </div>
   </section>
 
-  <!-- ==================== 4. いま起きていること ==================== -->
+  <!-- ==================== いま起きていること ==================== -->
   <section class="genjo">
     <div class="wrap genjo-grid">
       <div class="narrow">
@@ -143,7 +137,7 @@
     </div>
   </section>
 
-  <!-- ==================== 5. 使いみち ==================== -->
+  <!-- ==================== 使いみち ==================== -->
   <section class="tsukai">
     <div class="wrap">
       <h2 class="midashi">いただいた御花の使いみち。</h2>
@@ -156,7 +150,7 @@
     </div>
   </section>
 
-  <!-- ==================== 6. 応援の方法 ==================== -->
+  <!-- ==================== 応援の方法 ==================== -->
   <section class="ouen" id="ouen">
     <div class="wrap">
       <div class="ouen-head">
@@ -167,19 +161,19 @@
       <div class="hoho">
         <!-- 御花 -->
         <article class="card card-ohana" id="ohana">
-          <div class="card-body">
-            <h3>御花</h3>
-            <p class="sub">現金でのお受け取り。金額に応じて参拾人組のタオルをお渡しします。</p>
-            <div class="towels">
-              <figure>
-                <img src="img/towel_1.webp" width="800" height="800" alt="参拾人組のフェイスタオル" loading="lazy" decoding="async">
-                <figcaption>フェイスタオル</figcaption>
-              </figure>
-              <figure>
-                <img src="img/towel_2.webp" width="800" height="800" alt="参拾人組のバスタオル" loading="lazy" decoding="async">
-                <figcaption>バスタオル</figcaption>
-              </figure>
-            </div>
+          <h3>御花</h3>
+          <p class="sub">現金でのお受け取り。金額に応じて参拾人組のタオルをお渡しします。</p>
+          <div class="towels">
+            <figure>
+              <img src="img/towel_1.webp" width="800" height="800" alt="参拾人組のフェイスタオル" loading="lazy" decoding="async">
+              <figcaption>フェイスタオル</figcaption>
+            </figure>
+            <figure>
+              <img src="img/towel_2.webp" width="800" height="800" alt="参拾人組のバスタオル" loading="lazy" decoding="async">
+              <figcaption>バスタオル</figcaption>
+            </figure>
+          </div>
+          <div class="card-detail">
             <ul class="nedan">
               <li><b>1,000円</b><span>フェイスタオル 1枚</span></li>
               <li><b>3,000円</b><span>フェイスタオル 2枚</span></li>
@@ -194,6 +188,8 @@
 
         <!-- オガファン -->
         <article class="card card-ogafan" id="ogafan">
+          <h3>オガファン</h3>
+          <p class="sub">クレジットカードでのオンライン寄付。粗品のかわりに、YouTube総集編のエンドクレジットにお名前を掲載します。遠方の方にも。</p>
           <div class="credit" aria-label="YouTube総集編エンドクレジットの掲載イメージ">
             <div class="credit-roll">
               <h4>SPECIAL THANKS</h4>
@@ -204,19 +200,17 @@
               <h4>小垣内参拾人組</h4>
             </div>
           </div>
-          <div class="card-body">
-            <h3>オガファン</h3>
-            <p class="sub">クレジットカードでのオンライン寄付。粗品のかわりに、YouTube総集編のエンドクレジットにお名前を掲載します。遠方の方にも。</p>
+          <div class="card-detail">
             <p class="jisseki">昨年は<b>66</b>名の方に御支援いただきました！</p>
             <div class="plan">
               <b>500<small>円</small></b>
               <span>個人の方｜支援者一覧にお名前を掲載</span>
-              <a class="btn btn-white" href="https://donate.stripe.com/9B628lglT5q2fy8gWG8EM00"><!-- TODO: Stripe 500円 -->500円で応援する</a>
+              <a class="btn btn-white" href="https://donate.stripe.com/9B628lglT5q2fy8gWG8EM00">500円で応援する</a>
             </div>
             <div class="plan">
               <b>10,000<small>円</small></b>
               <span>お店・事業者の方｜店名・社名を大きく掲載</span>
-              <a class="btn btn-white" href="https://donate.stripe.com/28EbIVb1z05I4Tu0XI8EM01"><!-- TODO: Stripe 10,000円 -->10,000円で応援する</a>
+              <a class="btn btn-white" href="https://donate.stripe.com/28EbIVb1z05I4Tu0XI8EM01">10,000円で応援する</a>
             </div>
             <p class="chui">掲載名は決済ページの入力欄でご指定ください。掲載を希望されない場合はその旨をご記入ください。オガファンはタオルお返しの対象外です。</p>
           </div>
@@ -236,7 +230,7 @@
     </div>
   </section>
 
-  <!-- 寄付について -->
+  <!-- ==================== オンライン寄付について ==================== -->
   <section class="joho">
     <div class="wrap narrow">
       <details>
@@ -253,7 +247,7 @@
     </div>
   </section>
 
-  <!-- ==================== 7. クロージング ==================== -->
+  <!-- ==================== クロージング ==================== -->
   <section class="closing">
     <img class="closing-bg" src="img/yoru.webp" width="1920" height="1080" alt="" loading="lazy" decoding="async">
     <div class="wrap closing-inner">
@@ -286,7 +280,7 @@
 
 <div class="mobile-cta" id="mobileCta">
   <a class="btn btn-enji" href="#ogafan">オンラインで応援</a>
-  <a class="btn" style="border:1.5px solid var(--enji);color:var(--enji)" href="#ohana">御花について</a>
+  <a class="btn btn-enji-line" href="#ohana">御花について</a>
 </div>
 
 <script>

@@ -1,7 +1,6 @@
 :root {
   --enji: #6E1A26;      /* 小垣内のエンジ */
   --enji-deep: #43101A;
-  --enji-soft: #8E2A37;
   --shiro: #FFFFFF;
   --gofun: #F6F3F2;     /* 胡粉：わずかに赤みの白 */
   --sumi: #1E1517;
@@ -29,7 +28,6 @@ body {
   font-family: var(--gothic);
   font-size: 16px;
   line-height: 1.95;
-  font-feature-settings: "palt" 0;
 }
 
 img,
@@ -60,34 +58,14 @@ p {
   text-orientation: upright;
 }
 
-
-/* ---------- 差し替え用プレースホルダー ---------- */
-
-.ph {
-  position: relative;
-  background:
-    repeating-linear-gradient(135deg, rgba(255, 255, 255, .06) 0 14px, transparent 14px 28px),
-    linear-gradient(160deg, var(--enji-soft), var(--enji-deep));
-  color: rgba(255, 255, 255, .75);
-  overflow: hidden;
-}
-
-.ph::after {
-  content: attr(data-need);
-  position: absolute;
-  left: 1rem;
-  bottom: .8rem;
-  right: 1rem;
-  font-size: .75rem;
-  line-height: 1.6;
-  letter-spacing: .02em;
-}
-
-.ph.light {
-  background:
-    repeating-linear-gradient(135deg, rgba(110, 26, 38, .06) 0 14px, transparent 14px 28px),
-    var(--gofun);
-  color: var(--nezumi);
+.midashi {
+  font-family: var(--mincho);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3.6vw, 2.4rem);
+  line-height: 1.55;
+  letter-spacing: .04em;
+  margin: 0 0 1.5rem;
+  color: var(--enji);
 }
 
 
@@ -98,7 +76,6 @@ p {
   align-items: center;
   justify-content: center;
   gap: .5em;
-  min-height: 1rem;
   padding: .8rem 1.6rem;
   font-family: var(--gothic);
   font-weight: 700;
@@ -178,8 +155,7 @@ p {
   inset: 0;
 }
 
-.hero-media video,
-.hero-media .ph {
+.hero-media video {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -207,20 +183,26 @@ p {
   gap: clamp(1.8rem, 4vh, 3rem);
 }
 
-.hero-mark {
-  display: flex;
-  justify-content: center;
-}
-
 .hero-name {
   height: clamp(8.5rem, 26vh, 15rem);
   width: auto;
   max-width: none;
-  margin: 0;
+}
+
+.logo {
+  position: absolute;
+  z-index: 3;
+  top: 1.25rem;
+  left: 1.5rem;
+}
+
+.logo img {
+  width: auto;
+  height: 40px;
 }
 
 
-/* 日程：ヒーロー内のミニマムな一行 */
+/* 日程 */
 
 .hero-date-title {
   font-family: var(--mincho);
@@ -295,21 +277,8 @@ p {
   background: currentColor;
 }
 
-.logo {
-  position: absolute;
-  z-index: 3;
-  top: 1.25rem;
-  left: 1.5rem;
-  display: block;
-}
 
-.logo img {
-  width: auto;
-  height: 40px;
-}
-
-
-/* 初回ロードの一度だけの演出 */
+/* 初回ロードの演出 */
 
 @media (prefers-reduced-motion: no-preference) {
   .hero-name {
@@ -367,7 +336,7 @@ p {
 }
 
 
-/* ---------- リード（ヒーロー直下） ---------- */
+/* ---------- リード ---------- */
 
 .lead {
   padding: clamp(4rem, 9vw, 6.5rem) 0 clamp(3rem, 7vw, 5rem);
@@ -382,22 +351,12 @@ p {
 .lead h1 {
   font-family: var(--mincho);
   font-weight: 700;
-  font-size: clamp(1.8rem, 4.6vw, 3rem);
-  line-height: 1.55;
-  letter-spacing: .05em;
-  margin: 0 0 1.2rem;
-  color: var(--enji);
-}
-
-/* 縦書きの見出し：字の並びは上下中央、柱そのものは左右中央 */
-
-.lead h1.tate {
   font-size: clamp(1.5rem, 3.4vw, 2.3rem);
   line-height: 1.2;
   letter-spacing: .12em;
   text-indent: .12em;
-  text-align: center;
   margin: 0 0 2rem;
+  color: var(--enji);
 }
 
 .lead p {
@@ -410,7 +369,7 @@ p {
 }
 
 
-/* ---------- 小垣内のだんじり ---------- */
+/* ---------- 参拾人組について ---------- */
 
 .intro {
   padding: clamp(4.5rem, 10vw, 8rem) 0;
@@ -423,23 +382,13 @@ p {
   align-items: center;
 }
 
-.midashi {
-  font-family: var(--mincho);
-  font-weight: 700;
-  font-size: clamp(1.6rem, 3.6vw, 2.4rem);
-  line-height: 1.55;
-  letter-spacing: .04em;
-  margin: 0 0 1.5rem;
-  color: var(--enji);
-}
-
 .intro-photo {
   width: 100%;
   height: auto;
 }
 
 
-/* 3つの持ち場：大きな縦書きの役名が主役 */
+/* ---------- 三つの持ち場 ---------- */
 
 .yakuwari {
   background: var(--enji);
@@ -654,7 +603,6 @@ p {
   padding: 1.15rem .2rem;
   border-bottom: 1px solid var(--sen);
   font-weight: 500;
-  font-size: 1rem;
   line-height: 1.7;
 }
 
@@ -697,19 +645,21 @@ p {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
-  align-items: stretch;
 }
+
+/* 見出し／説明／画像／詳細の4段をsubgridで両カード共通にし、画像の位置を揃える */
 
 .card {
+  grid-row: span 4;
+  display: grid;
+  grid-template-rows: subgrid;
+  row-gap: 0;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
   border-radius: 6px;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
-.card-body {
-  padding: clamp(1.5rem, 4vw, 2.5rem);
-  flex: 1;
+.card-detail {
   display: flex;
   flex-direction: column;
 }
@@ -765,7 +715,7 @@ p {
   white-space: nowrap;
 }
 
-/* 御花のお礼品：フェイス／バスの2枚並び */
+/* 御花のお礼タオル */
 
 .towels {
   display: grid;
@@ -810,23 +760,34 @@ p {
 }
 
 
-/* エンドクレジット：オガファンの価値を画で見せる */
+/* オガファン：エンドクレジットの掲載イメージ */
 
 .credit {
   position: relative;
-  height: 13rem;
+  min-height: 13rem;
+  margin-bottom: 1.6rem;
+  border-radius: 4px;
   background: #000;
   overflow: hidden;
-  mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent);
+}
+
+/* 上下を黒へフェードさせ、流れる文字を端で消す */
+.credit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(#000, transparent 22%, transparent 78%, #000);
 }
 
 .credit-roll {
   position: absolute;
+  top: 100%;
   left: 0;
   right: 0;
   text-align: center;
   font-family: var(--mincho);
-  color: #fff;
+  color: var(--shiro);
   line-height: 2.1;
   font-size: .9rem;
   animation: roll 16s linear infinite;
@@ -845,12 +806,15 @@ p {
   font-weight: 700;
 }
 
+/* 枠の高さが画面幅で変わるため、下端の外から上端の外までをtopとtransformで流す */
 @keyframes roll {
   from {
-    transform: translateY(13rem);
+    top: 100%;
+    transform: none;
   }
 
   to {
+    top: 0;
     transform: translateY(-100%);
   }
 }
@@ -862,7 +826,8 @@ p {
   }
 }
 
-/* 昨年の実績 */
+
+/* オガファン：実績と金額プラン */
 
 .jisseki {
   margin: 0 0 1.5rem;
@@ -975,7 +940,7 @@ p {
 }
 
 
-/* ---------- 寄付について ---------- */
+/* ---------- オンライン寄付について ---------- */
 
 .joho {
   padding: 0 0 clamp(4rem, 8vw, 6rem);
@@ -1072,6 +1037,9 @@ p {
   justify-content: center;
 }
 
+
+/* ---------- SNS・フッター ---------- */
+
 .sns {
   padding: 3rem 0;
   display: flex;
@@ -1119,6 +1087,9 @@ footer .name {
   opacity: .7;
 }
 
+
+/* ---------- スマホ固定CTA（表示は36rem以下のみ） ---------- */
+
 .mobile-cta {
   display: none;
 }
@@ -1138,7 +1109,6 @@ footer .name {
     gap: 2.5rem;
   }
 
-
   .shiranai {
     grid-template-columns: 1fr;
   }
@@ -1157,7 +1127,7 @@ footer .name {
     height: clamp(7.5rem, 22vh, 10rem);
   }
 
-  .hero-date p {
+  .hero-date-list {
     gap: .2rem;
     flex-direction: column;
     font-size: .9rem;
@@ -1175,8 +1145,7 @@ footer .name {
     border-top: 0;
   }
 
-  /* 決済CTAは横に並べず、金額・説明の下に全幅で置く */
-
+  /* 決済ボタンは金額・説明の下に全幅で置く */
   .plan {
     grid-template-columns: 1fr;
     gap: .2rem;
@@ -1237,6 +1206,10 @@ footer .name {
     min-height: 2.9rem;
     font-size: .86rem;
     padding: .5rem;
+  }
+
+  .mobile-cta .btn-enji-line {
+    border-color: var(--enji);
   }
 
   body {
