@@ -368,6 +368,13 @@ p {
   justify-content: center;
 }
 
+.lead p.lead-note {
+  margin-top: 1.5rem;
+  font-size: .8rem;
+  color: var(--nezumi);
+  opacity: .8;
+}
+
 
 /* ---------- 参拾人組について ---------- */
 
