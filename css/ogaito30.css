@@ -465,10 +465,10 @@ p {
 
 .hito-head {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: end;
-  gap: 2rem;
-  flex-wrap: wrap;
+  text-align: right;
+  gap: 1rem;
   margin-bottom: 2rem;
 }
 
@@ -477,7 +477,8 @@ p {
 }
 
 .hito-head p {
-  max-width: 24rem;
+  /* 54字のリード文を27字×2行に収める */
+  max-width: 27.5em;
   margin: 0;
   color: var(--nezumi);
 }
@@ -598,11 +599,16 @@ p {
   padding: clamp(4.5rem, 10vw, 8rem) 0;
 }
 
+.tsukai .midashi {
+  text-align: center;
+}
+
 .tsukai-list {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0 clamp(2rem, 5vw, 4rem);
-  margin-top: 2.5rem;
+  max-width: 50rem;
+  margin: 2.5rem auto 0;
   padding: 0;
   list-style: none;
 }
@@ -1122,6 +1128,11 @@ footer .name {
 
   .shiranai {
     grid-template-columns: 1fr;
+  }
+
+  .hito-head {
+    align-items: start;
+    text-align: left;
   }
 }
 
