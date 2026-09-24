@@ -482,6 +482,10 @@ p {
   color: var(--nezumi);
 }
 
+.hito-head .nb {
+  display: inline-block;
+}
+
 .gallery {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
