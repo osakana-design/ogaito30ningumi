@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>試験曳き 曳行コース｜小垣内参拾人組</title>
+<meta name="description" content="令和八年10月4日（日）小垣内区だんじり試験曳きの曳行コース。時間ごとの予定位置を地図で確認できます。">
+<meta name="theme-color" content="#6E1A26">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+:root {
+  --enji: #6E1A26;
+  --enji-deep: #43101A;
+  --enji-pale: #F7ECEE;
+  --shiro: #FFFFFF;
+  --gofun: #F6F3F2;
+  --sumi: #1E1517;
+  --nezumi: #6E6264;
+  --sen: #E3DADB;
+  --mincho: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --gothic: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--shiro);
+  color: var(--sumi);
+  font-family: var(--gothic);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+button { font: inherit; color: inherit; }
+
+:focus-visible { outline: 3px solid var(--enji); outline-offset: 2px; }
+
+
+/* ---------- 見出し帯 ---------- */
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .2rem 1rem;
+  padding: .8rem 1.25rem;
+  background: var(--enji-deep);
+  color: var(--shiro);
+}
+
+.top-title { display: grid; line-height: 1.35; }
+
+.top-org {
+  font-family: var(--mincho);
+  font-size: .75rem;
+  letter-spacing: .2em;
+  opacity: .72;
+}
+
+.top h1 {
+  margin: 0;
+  font-family: var(--mincho);
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: .08em;
+}
+
+.top-date {
+  font-size: .82rem;
+  letter-spacing: .04em;
+  opacity: .85;
+}
+
+.edit-toggle {
+  margin-left: auto;
+  padding: .3rem .9rem;
+  border: 1px solid rgba(255, 255, 255, .55);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--shiro);
+  font-size: .78rem;
+  cursor: pointer;
+}
+
+.edit-toggle[hidden] { display: none; }
+
+
+/* ---------- 地図とパネル ---------- */
+
+.layout { display: grid; }
+
+#map {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 50svh;
+  min-height: 280px;
+  background: var(--gofun);
+}
+
+.tiles-pale { filter: contrast(1.2) saturate(.85); }
+.tiles-std { filter: saturate(.55); }
+.tiles-photo { filter: saturate(.75) brightness(1.05); }
+
+.leaflet-control-layers {
+  border: 0 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .3) !important;
+  font-size: .75rem;
+}
+
+.leaflet-control-layers-expanded { padding: .3rem .6rem .3rem .4rem; }
+
+.leaflet-control-layers label { margin: .1rem 0; }
+
+.leaflet-control-layers input { accent-color: var(--enji); }
+
+.leaflet-container { font-family: var(--gothic); }
+
+#map.is-armed { cursor: crosshair; }
+
+.tile-notice {
+  max-width: 16rem;
+  padding: .6rem .8rem;
+  border-left: 3px solid var(--enji);
+  border-radius: 4px;
+  background: var(--shiro);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .25);
+  font-size: .78rem;
+  line-height: 1.6;
+}
+
+.panel { padding: 1rem 1.25rem 3rem; }
+
+@media (min-width: 52rem) {
+  body {
+    display: flex;
+    flex-direction: column;
+    height: 100svh;
+  }
+
+  .layout {
+    flex: 1;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr) 25rem;
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  #map {
+    position: relative;
+    height: 100%;
+  }
+
+  .panel {
+    overflow-y: auto;
+    border-left: 1px solid var(--sen);
+  }
+}
+
+
+/* ---------- 部の切り替え ---------- */
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .35rem;
+  margin-bottom: 1rem;
+}
+
+.tab {
+  display: grid;
+  padding: .4rem .2rem .45rem;
+  border: 1px solid var(--sen);
+  border-radius: 6px;
+  background: var(--shiro);
+  line-height: 1.35;
+  text-align: center;
+  cursor: pointer;
+}
+
+.tab b {
+  font-family: var(--mincho);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tab small {
+  font-size: .66rem;
+  color: var(--nezumi);
+}
+
+.tab[aria-selected="true"] {
+  background: var(--enji);
+  border-color: var(--enji);
+  color: var(--shiro);
+}
+
+.tab[aria-selected="true"] small { color: rgba(255, 255, 255, .8); }
+
+
+/* ---------- いまの予定 ---------- */
+
+.status {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .2rem 1rem;
+  align-items: center;
+  margin-bottom: .8rem;
+  padding: .85rem 1rem;
+  border-radius: 6px;
+  background: var(--gofun);
+}
+
+.status-time {
+  grid-row: 1 / 3;
+  font-family: var(--mincho);
+  font-weight: 800;
+  font-size: 2.1rem;
+  line-height: 1;
+  color: var(--enji);
+  font-variant-numeric: tabular-nums;
+}
+
+.status-text {
+  font-size: .9rem;
+  line-height: 1.6;
+}
+
+.status-text .when {
+  color: var(--nezumi);
+  font-size: .8rem;
+  margin-left: .2em;
+}
+
+.status-live {
+  justify-self: start;
+  font-size: .72rem;
+  color: var(--enji);
+  font-weight: 700;
+}
+
+.status-live::before {
+  content: "";
+  display: inline-block;
+  width: .5rem;
+  height: .5rem;
+  margin-right: .35rem;
+  border-radius: 50%;
+  background: var(--enji);
+  vertical-align: .05em;
+}
+
+.back-live {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: .78rem;
+  color: var(--enji);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.status-live[hidden],
+.back-live[hidden] { display: none; }
+
+
+/* ---------- 再生 ---------- */
+
+.player {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  margin-bottom: 1.2rem;
+}
+
+.play {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  border-radius: 50%;
+  background: var(--enji);
+  color: var(--shiro);
+  cursor: pointer;
+}
+
+.play svg { width: 1rem; height: 1rem; fill: currentColor; }
+
+.scrub { flex: 1; display: grid; gap: .1rem; }
+
+.scrub input { width: 100%; margin: 0; accent-color: var(--enji); }
+
+.scrub-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: .72rem;
+  color: var(--nezumi);
+  font-variant-numeric: tabular-nums;
+}
+
+.missing {
+  margin: 0 0 1rem;
+  padding: .6rem .8rem;
+  border-left: 3px solid var(--enji);
+  background: var(--enji-pale);
+  font-size: .8rem;
+}
+
+.missing[hidden] { display: none; }
+
+
+/* ---------- 予定表 ---------- */
+
+.tt {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--sen);
+}
+
+.tt-row {
+  display: grid;
+  grid-template-columns: 3.1rem 1fr auto;
+  gap: .6rem;
+  align-items: center;
+  width: 100%;
+  padding: .5rem .5rem;
+  border: 0;
+  border-bottom: 1px solid var(--sen);
+  background: none;
+  text-align: left;
+  font-size: .92rem;
+  cursor: pointer;
+}
+
+.tt-row:hover { background: var(--gofun); }
+
+.tt-row time {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.tt-row.is-past { color: var(--nezumi); }
+
+.tt-row.is-past .badge { opacity: .55; }
+
+.tt-row.is-next {
+  background: var(--enji-pale);
+  box-shadow: inset 3px 0 0 var(--enji);
+}
+
+.tt-rest {
+  padding: .7rem 0;
+  font-family: var(--mincho);
+  font-weight: 700;
+  font-size: .9rem;
+  text-align: center;
+  color: var(--enji);
+}
+
+.tt-rest small {
+  display: block;
+  font-family: var(--gothic);
+  font-weight: 400;
+  font-size: .76rem;
+  color: var(--nezumi);
+}
+
+.badge {
+  padding: .05rem .55rem;
+  border-radius: 999px;
+  font-size: .72rem;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.b-yari { background: var(--enji); color: var(--shiro); }
+.b-peko { border: 1px solid var(--enji); color: var(--enji); }
+.b-tome { background: var(--nezumi); color: var(--shiro); }
+.b-turn { border: 1px solid var(--sen); background: var(--gofun); }
+.b-plain { color: var(--nezumi); padding-inline: 0; }
+
+
+/* ---------- 凡例・注記 ---------- */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+  margin: 1.4rem 0 .6rem;
+  padding: 0;
+  list-style: none;
+  font-size: .78rem;
+  color: var(--nezumi);
+}
+
+.legend li { display: flex; align-items: center; gap: .4rem; }
+
+.sym {
+  display: inline-block;
+  width: .8rem;
+  height: .8rem;
+  border: 2.5px solid var(--enji);
+  border-radius: 50%;
+  background: var(--shiro);
+}
+
+.sym-yari { background: var(--enji); }
+
+.note {
+  margin: 0 0 1.6rem;
+  font-size: .76rem;
+  color: var(--nezumi);
+}
+
+.ouen {
+  display: grid;
+  padding: .9rem 1.1rem;
+  border-radius: 6px;
+  background: var(--enji);
+  color: var(--shiro);
+  text-decoration: none;
+  font-family: var(--mincho);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.ouen small {
+  font-family: var(--gothic);
+  font-weight: 400;
+  font-size: .78rem;
+  opacity: .82;
+}
+
+.ouen:hover { background: var(--enji-deep); }
+
+
+/* ---------- 地図上の表示 ---------- */
+
+.leaflet-tooltip.lbl {
+  padding: 0 .4rem;
+  border: 0;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+  color: var(--sumi);
+  font-size: .7rem;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.leaflet-tooltip.lbl::before { display: none; }
+
+.leaflet-tooltip.lbl-yari { color: var(--enji); }
+
+.leaflet-tooltip.lbl-dim { opacity: .55 !important; }
+
+.hide-labels .leaflet-tooltip.lbl { display: none; }
+
+.dj { position: relative; width: 34px; height: 34px; }
+
+.dj-body {
+  position: absolute;
+  inset: 8px;
+  border: 3px solid var(--shiro);
+  border-radius: 50%;
+  background: var(--enji);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .4);
+}
+
+.dj-dir { position: absolute; inset: 0; }
+
+.dj-dir::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 9px solid var(--enji);
+}
+
+.dj-dir.is-none { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .dj::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 2px solid var(--enji);
+    border-radius: 50%;
+    animation: pulse 1.8s ease-out infinite;
+  }
+}
+
+@keyframes pulse {
+  from { transform: scale(1); opacity: .8; }
+  to { transform: scale(2.3); opacity: 0; }
+}
+
+.pin {
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--shiro);
+  border-radius: 50%;
+  background: var(--enji);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .45);
+}
+
+.via {
+  width: 14px;
+  height: 14px;
+  border: 2.5px solid var(--enji);
+  border-radius: 3px;
+  background: var(--shiro);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}
+
+
+/* ---------- 編集モード ---------- */
+
+.edit-panel { display: none; }
+
+.is-editing .view-panel { display: none; }
+
+.is-editing .edit-panel { display: block; }
+
+.edit-panel h2 {
+  margin: 0 0 .5rem;
+  font-family: var(--mincho);
+  font-size: 1.15rem;
+  color: var(--enji);
+}
+
+.edit-panel h3 {
+  display: flex;
+  justify-content: space-between;
+  margin: 1.4rem 0 .4rem;
+  font-size: .9rem;
+}
+
+.edit-panel h3 span { font-weight: 400; color: var(--nezumi); }
+
+.edit-help {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: .8rem;
+  color: var(--nezumi);
+}
+
+.armed {
+  position: sticky;
+  top: 50svh;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  margin: 1rem 0 0;
+  padding: .6rem .8rem;
+  border-radius: 6px;
+  background: var(--enji);
+  color: var(--shiro);
+  font-size: .85rem;
+}
+
+@media (min-width: 52rem) { .armed { top: 0; } }
+
+.armed[hidden] { display: none; }
+
+.armed button {
+  flex: none;
+  padding: .15rem .7rem;
+  border: 1px solid rgba(255, 255, 255, .6);
+  border-radius: 999px;
+  background: none;
+  color: var(--shiro);
+  font-size: .75rem;
+  cursor: pointer;
+}
+
+.plist, .slist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--sen);
+  font-size: .86rem;
+}
+
+.plist button {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  width: 100%;
+  padding: .4rem .3rem;
+  border: 0;
+  border-bottom: 1px solid var(--sen);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.plist button:hover { background: var(--gofun); }
+
+.plist button.is-armed { background: var(--enji-pale); }
+
+.plist .dot {
+  flex: none;
+  width: .7rem;
+  height: .7rem;
+  border: 2px solid var(--nezumi);
+  border-radius: 50%;
+}
+
+.plist .dot.is-on { border-color: var(--enji); background: var(--enji); }
+
+.plist small { margin-left: auto; color: var(--nezumi); font-size: .72rem; }
+
+.slist li {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .35rem .3rem;
+  border-bottom: 1px solid var(--sen);
+}
+
+.seg-name {
+  flex: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.seg-state { font-size: .72rem; color: var(--nezumi); white-space: nowrap; }
+
+.seg-state.is-todo { color: var(--enji); font-weight: 700; }
+
+.mini {
+  flex: none;
+  padding: .1rem .6rem;
+  border: 1px solid var(--enji);
+  border-radius: 999px;
+  background: var(--shiro);
+  color: var(--enji);
+  font-size: .72rem;
+  cursor: pointer;
+}
+
+.edit-actions { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .5rem; }
+
+.edit-actions .mini { padding: .3rem .9rem; font-size: .8rem; }
+
+.edit-actions .mini-fill { background: var(--enji); color: var(--shiro); }
+
+.edit-panel textarea {
+  width: 100%;
+  padding: .5rem;
+  border: 1px solid var(--sen);
+  border-radius: 4px;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: .72rem;
+}
+
+.edit-msg { min-height: 1.4em; margin: .3rem 0 0; font-size: .78rem; color: var(--enji); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-title">
+    <span class="top-org">小垣内参拾人組</span>
+    <h1>試験曳き 曳行コース</h1>
+  </div>
+  <span class="top-date">令和八年10月4日（日）12:00〜17:00</span>
+  <button class="edit-toggle" id="editToggle" type="button" hidden>コース編集</button>
+</header>
+
+<div class="layout">
+  <div id="map" role="region" aria-label="曳行コースの地図"></div>
+
+  <div class="panel">
+    <div class="tabs" id="tabs" role="tablist" aria-label="時間帯"></div>
+
+    <!-- 閲覧用 -->
+    <div class="view-panel">
+      <div class="status" aria-live="polite">
+        <div class="status-time" id="statusTime">12:00</div>
+        <div class="status-text" id="statusText"></div>
+        <span class="status-live" id="statusLive" hidden>当日の予定上の位置（目安）</span>
+        <button class="back-live" id="backLive" type="button" hidden>いまの予定位置に戻る</button>
+      </div>
+
+      <div class="player">
+        <button class="play" id="play" type="button" aria-label="コースを再生"></button>
+        <div class="scrub">
+          <input type="range" id="scrub" step="0.05" aria-label="時刻">
+          <div class="scrub-ends"><span id="scrubStart"></span><span id="scrubEnd"></span></div>
+        </div>
+      </div>
+
+      <p class="missing" id="missing" hidden></p>
+
+      <ol class="tt" id="timetable"></ol>
+
+      <ul class="legend">
+        <li><span class="badge b-yari">やりまわし</span></li>
+        <li><span class="badge b-peko">ペコまわし</span></li>
+        <li><span class="badge b-tome">止めまわし</span></li>
+        <li><span class="sym sym-yari"></span>やりまわしのある地点</li>
+        <li><span class="sym"></span>そのほかの地点</li>
+      </ul>
+      <p class="note">※曳行の都合により、コースおよび時間が前後する場合があります。地図上の位置は予定表から割り出した目安です。</p>
+
+      <a class="ouen" href="https://osakana-design.github.io/ogaito30ningumi/">小垣内参拾人組を応援する<small>御花・オンライン寄附「オガファン」</small></a>
+    </div>
+
+    <!-- 編集用 -->
+    <div class="edit-panel">
+      <h2>コース編集</h2>
+      <ol class="edit-help">
+        <li>地点を選び、地図をタップして配置します。配置したピンはドラッグで動かせます。</li>
+        <li>区間の線をタップすると曲がり角が増えます。曲がり角をドラッグして道路に沿わせてください。曲がり角はダブルクリック（スマホは長押し）で消せます。</li>
+        <li>まっすぐでよい区間は「直線でOK」を押します。</li>
+        <li>作業内容はこのブラウザに自動保存されます。仕上がったら「書き出す」でデータをコピーします。</li>
+      </ol>
+
+      <div class="armed" id="armed" hidden>
+        <span>地図をタップして「<b id="armedName"></b>」を配置</span>
+        <button type="button" id="armedCancel">やめる</button>
+      </div>
+
+      <h3>地点<span id="placeCount"></span></h3>
+      <ul class="plist" id="placeList"></ul>
+
+      <h3>この時間帯の区間<span id="segCount"></span></h3>
+      <ul class="slist" id="segList"></ul>
+
+      <h3>データ</h3>
+      <div class="edit-actions">
+        <button class="mini mini-fill" type="button" id="exportBtn">書き出す（コピー）</button>
+        <button class="mini" type="button" id="importBtn">貼り付けたデータを読み込む</button>
+        <button class="mini" type="button" id="clearBtn">下書きを破棄</button>
+      </div>
+      <textarea id="dataBox" rows="6" spellcheck="false" aria-label="コースデータ"></textarea>
+      <p class="edit-msg" id="editMsg"></p>
+    </div>
+  </div>
+</div>
+
+<!-- 地点の座標と区間の経路。編集モードで「書き出す」したデータをここに貼り付けると公開版に反映される -->
+<script type="application/json" id="course-data">
+{"places":{"地車庫":{"lat":34.400169,"lng":135.365746},"E-PLANTS":{"lat":34.398035,"lng":135.365413},"小垣内交番":{"lat":34.398128,"lng":135.364341},"大浦口":{"lat":34.398093,"lng":135.361691},"奥野衣料":{"lat":34.398142,"lng":135.366819},"大宮本部":{"lat":34.396606,"lng":135.366674},"正永寺":{"lat":34.395729,"lng":135.366111},"義本回正堂":{"lat":34.398057,"lng":135.362839},"大宮献灯前":{"lat":34.397398,"lng":135.366921},"本部":{"lat":34.398385,"lng":135.364373},"大久保東交差（扇屋）":{"lat":34.401483,"lng":135.344777},"旧AP":{"lat":34.403935,"lng":135.345576},"旧ネゴロ衣料":{"lat":34.404343,"lng":135.344927},"清原自転車":{"lat":34.401829,"lng":135.343028},"うでの商店":{"lat":34.401492,"lng":135.344766},"理容カナメ":{"lat":34.401195,"lng":135.346643},"フジカク":{"lat":34.399088,"lng":135.356927},"たちばな荘":{"lat":34.398646,"lng":135.359164},"金田佛心殿別館":{"lat":34.399871,"lng":135.362699}},"paths":{"大浦口|小垣内交番":{"via":[[34.398022,135.36234],[34.398053,135.362844],[34.398123,135.36338],[34.398124,135.363976]],"ok":false},"E-PLANTS|地車庫":{"via":[[34.398403,135.365371],[34.398956,135.365397],[34.399412,135.365424],[34.399722,135.365569],[34.399956,135.365676]],"ok":false},"奥野衣料|義本回正堂":{"via":[[34.398084,135.365945],[34.39804,135.365435],[34.398022,135.365065],[34.398057,135.364759],[34.398115,135.364351],[34.398119,135.363976],[34.398119,135.363386]],"ok":false},"E-PLANTS|小垣内交番":{"via":[[34.398031,135.365043],[34.398084,135.36455]],"ok":false},"奥野衣料|小垣内交番":{"via":[[34.398088,135.36595],[34.398013,135.365065],[34.398071,135.364711]],"ok":false},"大宮本部|奥野衣料":{"via":[[34.396951,135.366824],[34.39723,135.366883],[34.397411,135.36691],[34.397743,135.366856],[34.397982,135.36684]],"ok":false},"大宮本部|正永寺":{"via":[[34.396592,135.366583],[34.396415,135.366358],[34.396216,135.366154],[34.395999,135.3661]],"ok":false},"正永寺|義本回正堂":{"via":[[34.395804,135.365837],[34.39588,135.365676],[34.395937,135.365462],[34.395986,135.365081],[34.395999,135.364727],[34.396008,135.364555],[34.396088,135.363724],[34.396114,135.363386],[34.396212,135.363241],[34.396327,135.363144],[34.396548,135.363048]],"ok":false},"大宮献灯前|奥野衣料":{"via":[[34.39765,135.366862]],"ok":false},"小垣内交番|本部":{"via":[[34.398261,135.364362]],"ok":false},"大久保東交差（扇屋）|本部":{"via":[[34.401306,135.346386],[34.401187,135.346611],[34.400567,135.347593],[34.400173,135.348762],[34.399894,135.349524],[34.399558,135.349996],[34.39943,135.350296],[34.398991,135.351343],[34.398898,135.352281],[34.398836,135.352823],[34.399129,135.354545],[34.399248,135.355162],[34.399306,135.35572],[34.399084,135.356911],[34.398819,135.358279],[34.398549,135.359679],[34.398243,135.361159],[34.398026,135.36234],[34.398062,135.362871],[34.398124,135.363412],[34.398133,135.363976],[34.398115,135.364362]],"ok":false},"うでの商店|理容カナメ":{"via":[[34.401311,135.346359]],"ok":false},"大久保東交差（扇屋）|旧AP":{"via":[[34.402072,135.344878]],"ok":false},"旧AP|旧ネゴロ衣料":{"via":[],"ok":true},"旧ネゴロ衣料|清原自転車":{"via":[[34.404073,135.344718],[34.403714,135.344396],[34.402842,135.343655],[34.402572,135.343451]],"ok":false},"うでの商店|清原自転車":{"via":[[34.401523,135.344342],[34.401594,135.343848],[34.401718,135.343376]],"ok":false},"うでの商店|旧AP":{"via":[[34.402085,135.344884]],"ok":false},"フジカク|理容カナメ":{"via":[[34.399323,135.355672],[34.398832,135.352855],[34.398894,135.352324],[34.399009,135.351257],[34.39954,135.350034],[34.399943,135.349427],[34.400558,135.347614],[34.400868,135.34711],[34.401116,135.346708]],"ok":false},"たちばな荘|フジカク":{"via":[[34.398881,135.357952]],"ok":false},"たちばな荘|義本回正堂":{"via":[[34.398549,135.359711],[34.398363,135.360602],[34.398106,135.361776],[34.398018,135.36234]],"ok":false},"小垣内交番|義本回正堂":{"via":[[34.398128,135.363423]],"ok":false},"小垣内交番|金田佛心殿別館":{"via":[[34.39862,135.364389],[34.398828,135.364383],[34.398934,135.364303],[34.399137,135.363997],[34.399248,135.363772],[34.399337,135.363402],[34.399549,135.362994]],"ok":false},"本部|金田佛心殿別館":{"via":[[34.398819,135.364389],[34.398921,135.364308],[34.399133,135.364003],[34.399239,135.363788],[34.399341,135.363402],[34.399549,135.362999]],"ok":false},"奥野衣料|本部":{"via":[[34.398022,135.36507],[34.398106,135.364362]],"ok":false},"E-PLANTS|奥野衣料":{"via":[[34.398084,135.36595]],"ok":false},"奥野衣料|正永寺":{"via":[[34.397632,135.366867],[34.397371,135.366915],[34.39711,135.366862],[34.396915,135.366819],[34.396623,135.36669],[34.396597,135.366572],[34.396349,135.366261],[34.396097,135.3661]],"ok":false}}}
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // ================= 予定表（令和八年 試験曳き） =================
+  // 種別: yari=やりまわし【】 peko=ペコまわし≪≫ tome=止めまわし（） u=Uターン back=バック straight=直進 dep=発 arr=着
+  // 5番目の要素：地図上の位置を表示名と別に持つ場合の地点名（例：脇道にバックで入る位置）
+  const DAY = '2026-10-04';
+  const RAW = [
+    { rest: 17, stops: [
+      ['12:00', '地車庫', 'dep'],
+      ['12:03', 'E-PLANTS', 'tome', '右折'],
+      ['12:05', '小垣内交番', 'straight'],
+      ['12:10', '大浦口', 'u'],
+      ['12:13', '小垣内交番', 'straight'],
+      ['12:17', '奥野衣料', 'yari', '右折'],
+      ['12:24', '大宮本部', 'tome', '右折'],
+      ['12:27', '正永寺', 'tome', '右折'],
+      ['12:34', '義本回正堂', 'peko', '右折'],
+      ['12:42', '奥野衣料', 'yari', '右折'],
+      ['12:45', '大宮献灯前', 'u'],
+      ['12:48', '奥野衣料', 'yari', '左折'],
+      ['12:51', '小垣内交番', 'back'],
+      ['12:53', '本部', 'arr']
+    ]},
+    { rest: 20, stops: [
+      ['13:10', '本部', 'dep'],
+      ['13:40', '大久保東交差（扇屋）', 'yari', '右折'],
+      ['13:46', '旧AP', 'yari', '左折'],
+      ['13:47', '旧ネゴロ衣料', 'yari', '左折'],
+      ['13:54', '清原自転車', 'peko', '左折'],
+      ['13:57', 'うでの商店', 'yari', '左折'],
+      ['14:04', '旧AP', 'yari', '左折'],
+      ['14:05', '旧ネゴロ衣料', 'yari', '左折'],
+      ['14:12', '清原自転車', 'peko', '左折'],
+      ['14:15', 'うでの商店', 'yari', '左折'],
+      ['14:24', '旧AP', 'yari', '左折'],
+      ['14:25', '旧ネゴロ衣料', 'yari', '左折'],
+      ['14:32', '清原自転車', 'peko', '左折'],
+      ['14:36', 'うでの商店', 'straight'],
+      ['14:40', '理容カナメ', 'arr']
+    ]},
+    { rest: 10, stops: [
+      ['15:00', '理容カナメ', 'dep'],
+      ['15:25', 'フジカク', 'straight'],
+      ['15:31', 'たちばな荘', 'straight'],
+      ['15:40', '義本回正堂', 'straight'],
+      ['15:43', '小垣内交番', 'yari', '左折'],
+      ['15:46', '金田佛心殿別館', 'u'],
+      ['15:50', '本部', 'arr']
+    ]},
+    { rest: 0, stops: [
+      ['16:00', '本部', 'dep'],
+      ['16:05', '奥野衣料', 'yari', '右折'],
+      ['16:14', '正永寺', 'tome', '右折'],
+      ['16:21', '義本回正堂', 'peko', '右折'],
+      ['16:29', '奥野衣料', 'yari', '右折'],
+      ['16:32', '大宮献灯前', 'u'],
+      ['16:35', '奥野衣料', 'yari', '左折'],
+      ['16:38', 'E-PLANTS', 'back', '', 'E-PLANTS・バック位置'],
+      ['16:41', 'E-PLANTS', 'yari', '左折'],
+      ['16:44', '奥野衣料', 'yari', '右折'],
+      ['16:46', '大宮献灯前', 'u'],
+      ['16:48', '奥野衣料', 'yari', '左折'],
+      ['16:50', 'E-PLANTS', 'tome', '右折'],
+      ['17:00', '地車庫', 'arr']
+    ]}
+  ];
+
+  const TYPES = {
+    yari: { label: 'やりまわし', cls: 'b-yari' },
+    peko: { label: 'ペコまわし', cls: 'b-peko' },
+    tome: { label: '止めまわし', cls: 'b-tome' },
+    u: { label: 'Uターン', cls: 'b-turn' },
+    back: { label: 'バック', cls: 'b-turn' },
+    straight: { label: '直進', cls: 'b-plain' },
+    dep: { label: '発', cls: 'b-plain' },
+    arr: { label: '着', cls: 'b-plain' }
+  };
+  const KANJI = ['一', '二', '三', '四', '五', '六'];
+  const STORE_KEY = 'ogaito30-course-r8-shiken';
+  const ENJI = '#6E1A26';
+  const LABEL_ZOOM = 16;
+  const MS_PER_MIN = 250; // 再生速度：予定の1分を0.25秒で進める
+
+  // ================= 下ごしらえ =================
+  const toMin = s => { const p = s.split(':'); return (+p[0]) * 60 + (+p[1]); };
+  const pad = n => (n < 10 ? '0' : '') + n;
+  const fmt = t => { const m = Math.floor(t + 1e-6); return Math.floor(m / 60) + ':' + pad(m % 60); };
+  const r6 = x => Math.round(x * 1e6) / 1e6;
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  const BLOCKS = RAW.map((b, i) => {
+    const stops = b.stops.map(s => ({ time: s[0], t: toMin(s[0]), place: s[1], pt: s[4] || s[1], type: s[2], dir: s[3] || '' }));
+    return {
+      no: i, rest: b.rest, stops,
+      start: stops[0].t, end: stops[stops.length - 1].t,
+      from: stops[0].place, to: stops[stops.length - 1].place
+    };
+  });
+
+  const PLACE_NAMES = [];
+  BLOCKS.forEach(b => b.stops.forEach(s => { if (!PLACE_NAMES.includes(s.pt)) PLACE_NAMES.push(s.pt); }));
+
+  // ================= データ（座標・経路） =================
+  let data = { places: {}, paths: {} };
+  try { data = JSON.parse(document.getElementById('course-data').textContent); } catch (e) { /* 空のまま */ }
+  let hasDraft = false;
+  try {
+    const d = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+    if (d && d.places) { data = d; hasDraft = true; }
+  } catch (e) { /* 保存領域が使えない環境 */ }
+  data.places = data.places || {};
+  data.paths = data.paths || {};
+
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); hasDraft = true; } catch (e) { /* 保存不可 */ }
+  }
+
+  const hasCoord = n => { const p = data.places[n]; return !!p && isFinite(p.lat) && isFinite(p.lng); };
+  const ll = n => [data.places[n].lat, data.places[n].lng];
+  const pairKey = (a, b) => (a < b ? a + '|' + b : b + '|' + a);
+
+  // a→b の経路。経由点は名前の小さい方→大きい方の向きで保存している
+  function legCoords(a, b) {
+    if (!hasCoord(a) || !hasCoord(b)) return null;
+    if (a === b) return [ll(a), ll(a)];
+    const p = data.paths[pairKey(a, b)];
+    const via = p && p.via ? p.via.slice() : [];
+    if (a > b) via.reverse();
+    return [ll(a)].concat(via, [ll(b)]);
+  }
+
+  const dist = (p, q) => L.latLng(p).distanceTo(L.latLng(q));
+
+  function buildLegs(b) {
+    const legs = [];
+    for (let i = 0; i < b.stops.length - 1; i++) {
+      const s = b.stops[i], n = b.stops[i + 1];
+      const coords = legCoords(s.pt, n.pt);
+      const cum = [0];
+      let len = 0;
+      if (coords) for (let j = 1; j < coords.length; j++) { len += dist(coords[j - 1], coords[j]); cum.push(len); }
+      legs.push({ t0: s.t, t1: n.t, coords, cum, len });
+    }
+    return legs;
+  }
+
+  // 区間上の割合 f の位置と、その地点が属する線分の番号
+  function pointAt(leg, f) {
+    const c = leg.coords;
+    if (leg.len === 0) return { pt: c[0], seg: 1 };
+    const target = Math.max(0, Math.min(1, f)) * leg.len;
+    let j = 1;
+    while (j < c.length - 1 && leg.cum[j] < target) j++;
+    const segLen = leg.cum[j] - leg.cum[j - 1];
+    const k = segLen ? (target - leg.cum[j - 1]) / segLen : 0;
+    return { pt: [c[j - 1][0] + (c[j][0] - c[j - 1][0]) * k, c[j - 1][1] + (c[j][1] - c[j - 1][1]) * k], seg: j };
+  }
+
+  // ================= 地図 =================
+  const map = L.map('map', { minZoom: 13, maxZoom: 18, zoomControl: true }).setView(ll('地車庫'), 16);
+  map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
+  const GSI_ATTR = '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a>';
+  const BASES = {
+    '淡色地図': L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', { maxZoom: 18, attribution: GSI_ATTR, className: 'tiles-pale' }),
+    '標準地図': L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', { maxZoom: 18, attribution: GSI_ATTR, className: 'tiles-std' }),
+    '航空写真': L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', { maxZoom: 18, attribution: GSI_ATTR, className: 'tiles-photo' })
+  };
+  BASES['淡色地図'].addTo(map);
+  L.control.layers(BASES, null, { position: 'topright', collapsed: false }).addTo(map);
+
+  // 地図画像が読み込めない環境（プレビュー画面など）では、その旨を地図上に表示する
+  let tileOk = 0, tileNg = 0, tileNotice = null;
+  Object.values(BASES).forEach(tiles => {
+    tiles.on('tileload', () => { tileOk++; if (tileNotice) { tileNotice.remove(); tileNotice = null; } });
+    tiles.on('tileerror', () => {
+      tileNg++;
+      if (tileOk === 0 && tileNg >= 3 && !tileNotice) {
+        tileNotice = L.control({ position: 'bottomleft' });
+        tileNotice.onAdd = () => {
+          const el = L.DomUtil.create('div', 'tile-notice');
+          el.textContent = '背景の地図を読み込めません。ファイルをダウンロードしてブラウザで直接開くか、公開先のURLで表示してください。';
+          return el;
+        };
+        tileNotice.addTo(map);
+      }
+    });
+  });
+
+  const mapEl = map.getContainer();
+  const syncLabels = () => mapEl.classList.toggle('hide-labels', map.getZoom() < LABEL_ZOOM);
+  map.on('zoomend', syncLabels);
+  syncLabels();
+
+  const viewLayer = L.layerGroup().addTo(map);
+  const editLayer = L.layerGroup();
+
+  const baseLine = L.polyline([], { color: ENJI, weight: 7, opacity: .3, lineCap: 'round', lineJoin: 'round', interactive: false }).addTo(viewLayer);
+  const doneLine = L.polyline([], { color: ENJI, weight: 5, opacity: .95, lineCap: 'round', lineJoin: 'round', interactive: false }).addTo(viewLayer);
+  const stopLayer = L.layerGroup().addTo(viewLayer);
+  const djMarker = L.marker(ll('地車庫'), {
+    icon: L.divIcon({ className: '', html: '<div class="dj"><div class="dj-dir"></div><div class="dj-body"></div></div>', iconSize: [34, 34], iconAnchor: [17, 17] }),
+    interactive: false, keyboard: false, zIndexOffset: 1000
+  });
+
+  // ================= 画面の要素 =================
+  const $ = id => document.getElementById(id);
+  const tabsEl = $('tabs'), ttEl = $('timetable'), scrub = $('scrub'), playBtn = $('play');
+  const statusTime = $('statusTime'), statusText = $('statusText'), statusLive = $('statusLive'), backLive = $('backLive');
+
+  const ICON_PLAY = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z"/></svg>';
+  const ICON_PAUSE = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 2.5h3.2v11H3.5zM9.3 2.5h3.2v11H9.3z"/></svg>';
+
+  let cur = 0, legs = [], t = BLOCKS[0].start, rows = [];
+  let playing = false, lastTs = 0, heading = null;
+  let live = false, editing = false, armed = null;
+
+  function badge(s) {
+    const ty = TYPES[s.type];
+    const txt = (s.type === 'yari' || s.type === 'peko' || s.type === 'tome') && s.dir ? ty.label + '・' + s.dir : ty.label;
+    return '<span class="badge ' + ty.cls + '">' + txt + '</span>';
+  }
+
+  function renderTabs() {
+    tabsEl.innerHTML = BLOCKS.map((b, i) =>
+      '<button class="tab" role="tab" type="button" data-i="' + i + '" aria-selected="' + (i === cur) + '">' +
+      '<b>' + b.stops[0].time + '</b><small>第' + KANJI[i] + '部</small></button>'
+    ).join('');
+  }
+
+  function renderTimetable() {
+    const b = BLOCKS[cur];
+    let html = b.stops.map((s, i) =>
+      '<li><button class="tt-row" type="button" data-i="' + i + '">' +
+      '<time>' + s.time + '</time><span>' + esc(s.place) + '</span>' + badge(s) + '</button></li>'
+    ).join('');
+    const nb = BLOCKS[cur + 1];
+    if (nb) html += '<li class="tt-rest">《 休憩 ' + b.rest + '分 》<small>次は ' + nb.stops[0].time + ' ' + esc(nb.from) + ' 発（第' + KANJI[cur + 1] + '部）</small></li>';
+    ttEl.innerHTML = html;
+    rows = Array.from(ttEl.querySelectorAll('.tt-row'));
+  }
+
+  function renderStops() {
+    stopLayer.clearLayers();
+    const b = BLOCKS[cur];
+    const yari = new Set(b.stops.filter(s => s.type === 'yari').map(s => s.place));
+    const seen = new Set();
+    b.stops.forEach(s => {
+      // 脇道などの補助地点には印を付けない
+      if (s.pt !== s.place || seen.has(s.place) || !hasCoord(s.place)) return;
+      seen.add(s.place);
+      const isY = yari.has(s.place);
+      L.circleMarker(ll(s.place), {
+        radius: 6, color: ENJI, weight: 2.5, fillColor: isY ? ENJI : '#fff', fillOpacity: 1, interactive: false
+      }).bindTooltip(esc(s.place), {
+        permanent: true, direction: 'top', offset: [0, -7], className: 'lbl' + (isY ? ' lbl-yari' : '')
+      }).addTo(stopLayer);
+    });
+  }
+
+  function renderMissing() {
+    const miss = [...new Set(BLOCKS[cur].stops.map(s => s.pt))].filter(n => !hasCoord(n));
+    const el = $('missing');
+    el.hidden = miss.length === 0;
+    if (miss.length) el.textContent = 'まだ地図に配置されていない地点があります：' + miss.join('、');
+  }
+
+  function blockBounds(b) {
+    const pts = [];
+    buildLegs(b).forEach(l => { if (l.coords) pts.push(...l.coords); });
+    b.stops.forEach(s => { if (hasCoord(s.pt)) pts.push(ll(s.pt)); });
+    return pts.length ? L.latLngBounds(pts) : null;
+  }
+
+  function fitBlock() {
+    const bd = blockBounds(BLOCKS[cur]);
+    if (!bd) return;
+    if (bd.getNorthEast().equals(bd.getSouthWest())) map.setView(bd.getCenter(), 17);
+    else map.fitBounds(bd, { padding: [36, 36], maxZoom: 18 });
+  }
+
+  function selectBlock(i, opts) {
+    opts = opts || {};
+    cur = i;
+    renderTabs();
+    if (editing) {
+      renderEdit();
+    } else {
+      const b = BLOCKS[cur];
+      legs = buildLegs(b);
+      baseLine.setLatLngs(legs.filter(l => l.coords && l.len > 0).map(l => l.coords));
+      renderStops();
+      renderTimetable();
+      renderMissing();
+      scrub.min = b.start;
+      scrub.max = b.end;
+      $('scrubStart').textContent = b.stops[0].time;
+      $('scrubEnd').textContent = b.stops[b.stops.length - 1].time;
+      heading = null;
+      t = opts.t != null ? opts.t : b.start;
+      update();
+    }
+    if (!opts.noFit) fitBlock();
+  }
+
+  // ================= 時刻に応じた表示 =================
+  function update() {
+    const b = BLOCKS[cur];
+    t = Math.max(b.start, Math.min(b.end, t));
+    const done = [];
+    let pos = null, seg = null, legForHeading = null;
+
+    for (let i = 0; i < legs.length; i++) {
+      const l = legs[i];
+      if (t >= l.t1 && i < legs.length - 1) { if (l.coords) done.push(l.coords); continue; }
+      if (t >= l.t1) { // 最後の区間を通り過ぎた＝到着
+        if (l.coords) { done.push(l.coords); pos = l.coords[l.coords.length - 1]; }
+        break;
+      }
+      if (l.coords) {
+        const r = pointAt(l, (t - l.t0) / Math.max(1e-6, l.t1 - l.t0));
+        done.push(l.coords.slice(0, r.seg).concat([r.pt]));
+        pos = r.pt; seg = r.seg; legForHeading = l;
+      }
+      break;
+    }
+    doneLine.setLatLngs(done.filter(c => c.length > 1));
+
+    if (pos) {
+      djMarker.setLatLng(pos);
+      if (!viewLayer.hasLayer(djMarker)) djMarker.addTo(viewLayer);
+      if (legForHeading && legForHeading.len > 0) {
+        const a = map.latLngToLayerPoint(legForHeading.coords[seg - 1]);
+        const c = map.latLngToLayerPoint(legForHeading.coords[seg]);
+        if (a.distanceTo(c) > 0.5) heading = Math.atan2(c.y - a.y, c.x - a.x) * 180 / Math.PI;
+      }
+      const dir = djMarker.getElement() && djMarker.getElement().querySelector('.dj-dir');
+      if (dir) {
+        dir.classList.toggle('is-none', heading == null);
+        if (heading != null) dir.style.transform = 'rotate(' + (heading + 90) + 'deg)';
+      }
+      if (playing || live) {
+        const inner = map.getBounds().pad(-0.15);
+        if (!inner.contains(pos)) map.panTo(pos, { animate: true, duration: .4 });
+      }
+    } else if (viewLayer.hasLayer(djMarker)) {
+      viewLayer.removeLayer(djMarker);
+    }
+
+    // 状況の文章
+    statusTime.textContent = fmt(t);
+    const last = b.stops[b.stops.length - 1];
+    let html;
+    if (t >= b.end - 1e-6) {
+      const nb = BLOCKS[cur + 1];
+      html = '<b>' + esc(last.place) + '</b> 着' + (nb
+        ? '<br><span class="when">休憩' + b.rest + '分ののち ' + nb.stops[0].time + ' ' + esc(nb.from) + ' 発</span>'
+        : '<br><span class="when">試験曳きはここまでです</span>');
+    } else {
+      const at = b.stops.find(s => Math.abs(s.t - t) < 1e-6);
+      const next = b.stops.find(s => s.t > t + 1e-6);
+      html = at
+        ? '<b>' + esc(at.place) + '</b> ' + badge(at) + (next ? '<br><span class="when">次は ' + esc(next.place) + '（' + next.time + '）</span>' : '')
+        : '次は <b>' + esc(next.place) + '</b> ' + badge(next) + '<span class="when">' + next.time + '予定</span>';
+    }
+    statusText.innerHTML = html;
+
+    // 予定表の現在行
+    let nextIdx = b.stops.findIndex(s => s.t >= t - 1e-6);
+    if (nextIdx < 0) nextIdx = b.stops.length - 1;
+    rows.forEach((r, i) => {
+      r.classList.toggle('is-past', i < nextIdx);
+      r.classList.toggle('is-next', i === nextIdx);
+    });
+
+    scrub.value = t;
+  }
+
+  // ================= 再生 =================
+  function setPlayIcon() {
+    playBtn.innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
+    playBtn.setAttribute('aria-label', playing ? '一時停止' : 'コースを再生');
+  }
+
+  function tick(ts) {
+    if (!playing) return;
+    if (lastTs) t += (ts - lastTs) / MS_PER_MIN;
+    lastTs = ts;
+    if (t >= BLOCKS[cur].end) { t = BLOCKS[cur].end; playing = false; setPlayIcon(); }
+    update();
+    if (playing) requestAnimationFrame(tick);
+  }
+
+  function startPlay() {
+    if (t >= BLOCKS[cur].end - 1e-6) t = BLOCKS[cur].start;
+    playing = true; lastTs = 0; setPlayIcon();
+    requestAnimationFrame(tick);
+  }
+
+  function stopPlay() { playing = false; setPlayIcon(); }
+
+  // ================= 当日の予定位置 =================
+  function jstNow() {
+    const s = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Tokyo' });
+    return { date: s.slice(0, 10), min: (+s.slice(11, 13)) * 60 + (+s.slice(14, 16)) + (+s.slice(17, 19)) / 60 };
+  }
+
+  function liveTarget() {
+    const n = jstNow();
+    if (n.date !== DAY) return null;
+    for (let i = 0; i < BLOCKS.length; i++) {
+      const b = BLOCKS[i];
+      if (n.min < b.start) return i === 0 ? null : { i: i - 1, t: BLOCKS[i - 1].end }; // 休憩中
+      if (n.min <= b.end) return { i, t: n.min };
+    }
+    return null;
+  }
+
+  function setLive(on) {
+    live = on;
+    statusLive.hidden = !on;
+    backLive.hidden = on || !liveTarget();
+  }
+
+  function goLive(fit) {
+    const lt = liveTarget();
+    if (!lt) { setLive(false); return; }
+    setLive(true);
+    if (lt.i !== cur) selectBlock(lt.i, { t: lt.t, noFit: !fit });
+    else { t = lt.t; update(); }
+  }
+
+  function userTookOver() { if (live) setLive(false); }
+
+  // ================= 閲覧の操作 =================
+  tabsEl.addEventListener('click', e => {
+    const btn = e.target.closest('.tab');
+    if (!btn) return;
+    stopPlay(); userTookOver();
+    selectBlock(+btn.dataset.i);
+  });
+
+  scrub.addEventListener('input', () => { stopPlay(); userTookOver(); t = +scrub.value; update(); });
+
+  playBtn.addEventListener('click', () => { userTookOver(); playing ? stopPlay() : startPlay(); });
+
+  ttEl.addEventListener('click', e => {
+    const row = e.target.closest('.tt-row');
+    if (!row) return;
+    stopPlay(); userTookOver();
+    const s = BLOCKS[cur].stops[+row.dataset.i];
+    t = s.t;
+    update();
+    if (hasCoord(s.pt)) map.panTo(ll(s.pt));
+  });
+
+  backLive.addEventListener('click', () => { stopPlay(); goLive(true); });
+
+  setInterval(() => { if (live && !editing) goLive(false); }, 20000);
+
+  // ================= 編集モード =================
+  const PIN_ICON = L.divIcon({ className: '', html: '<div class="pin"></div>', iconSize: [18, 18], iconAnchor: [9, 9] });
+  const VIA_ICON = L.divIcon({ className: '', html: '<div class="via"></div>', iconSize: [14, 14], iconAnchor: [7, 7] });
+  const editToggle = $('editToggle'), editMsg = $('editMsg'), dataBox = $('dataBox');
+
+  const params = new URLSearchParams(location.search);
+  const canEdit = params.has('edit') || location.hash === '#edit' || PLACE_NAMES.some(n => !hasCoord(n));
+  editToggle.hidden = !canEdit;
+
+  function blockPairs(b) {
+    const out = [];
+    for (let i = 0; i < b.stops.length - 1; i++) {
+      const a = b.stops[i].pt, c = b.stops[i + 1].pt;
+      if (a === c) continue;
+      const k = pairKey(a, c);
+      if (!out.includes(k)) out.push(k);
+    }
+    return out;
+  }
+
+  const pathDone = k => { const p = data.paths[k]; return !!(p && ((p.via && p.via.length) || p.ok)); };
+  const ensurePath = k => data.paths[k] || (data.paths[k] = { via: [], ok: false });
+
+  function insertVia(k, latlng) {
+    const [a, c] = k.split('|');
+    const coords = legCoords(a, c);
+    const p = map.latLngToLayerPoint(latlng);
+    let best = 0, bd = Infinity;
+    for (let i = 0; i < coords.length - 1; i++) {
+      const d = L.LineUtil.pointToSegmentDistance(p, map.latLngToLayerPoint(coords[i]), map.latLngToLayerPoint(coords[i + 1]));
+      if (d < bd) { bd = d; best = i; }
+    }
+    ensurePath(k).via.splice(best, 0, [r6(latlng.lat), r6(latlng.lng)]);
+    save();
+    renderEdit();
+  }
+
+  function renderEdit() {
+    editLayer.clearLayers();
+    const b = BLOCKS[cur];
+    const inBlock = new Set(b.stops.map(s => s.pt));
+
+    blockPairs(b).forEach(k => {
+      const [a, c] = k.split('|');
+      const coords = legCoords(a, c);
+      if (!coords) return;
+      const ok = pathDone(k);
+      const line = L.polyline(coords, {
+        color: ok ? ENJI : '#8C7F81', weight: 5, opacity: .9, dashArray: ok ? null : '1 9',
+        lineCap: 'round', interactive: false
+      }).addTo(editLayer);
+      const hit = L.polyline(coords, { weight: 24, opacity: 0, bubblingMouseEvents: false }).addTo(editLayer);
+      hit.on('click', e => insertVia(k, e.latlng));
+
+      const p = data.paths[k];
+      if (p && p.via) p.via.forEach((v, idx) => {
+        const m = L.marker(v, { icon: VIA_ICON, draggable: true, bubblingMouseEvents: false, zIndexOffset: 500 }).addTo(editLayer);
+        m.on('drag', ev => {
+          const g = ev.target.getLatLng();
+          p.via[idx] = [r6(g.lat), r6(g.lng)];
+          const nc = legCoords(a, c);
+          line.setLatLngs(nc); hit.setLatLngs(nc);
+        });
+        m.on('dragend', save);
+        const del = ev => {
+          if (ev.originalEvent) L.DomEvent.stop(ev.originalEvent);
+          p.via.splice(idx, 1);
+          save();
+          renderEdit();
+        };
+        m.on('dblclick', del);
+        m.on('contextmenu', del);
+      });
+    });
+
+    PLACE_NAMES.forEach(n => {
+      if (!hasCoord(n)) return;
+      const m = L.marker(ll(n), { icon: PIN_ICON, draggable: true, bubblingMouseEvents: false, zIndexOffset: 1000 }).addTo(editLayer);
+      m.bindTooltip(esc(n), { permanent: true, direction: 'top', offset: [0, -10], className: 'lbl' + (inBlock.has(n) ? '' : ' lbl-dim') });
+      m.on('dragend', ev => {
+        const g = ev.target.getLatLng();
+        data.places[n] = { lat: r6(g.lat), lng: r6(g.lng) };
+        save();
+        renderEdit();
+      });
+    });
+
+    renderEditPanel();
+  }
+
+  function renderEditPanel() {
+    const b = BLOCKS[cur];
+    const inBlock = new Set(b.stops.map(s => s.pt));
+    const placed = PLACE_NAMES.filter(hasCoord).length;
+    $('placeCount').textContent = placed + ' / ' + PLACE_NAMES.length + ' 配置済み';
+
+    $('placeList').innerHTML = PLACE_NAMES.map(n =>
+      '<li><button type="button" data-place="' + esc(n) + '" class="' + (armed === n ? 'is-armed' : '') + '">' +
+      '<span class="dot' + (hasCoord(n) ? ' is-on' : '') + '"></span>' + esc(n) +
+      '<small>' + (hasCoord(n) ? '置き直す' : '未配置') + (inBlock.has(n) ? '' : '・他の時間帯') + '</small></button></li>'
+    ).join('');
+
+    const pairs = blockPairs(b);
+    $('segCount').textContent = pairs.filter(pathDone).length + ' / ' + pairs.length + ' 調整済み';
+    $('segList').innerHTML = pairs.map(k => {
+      const [a, c] = k.split('|');
+      const p = data.paths[k];
+      const nVia = p && p.via ? p.via.length : 0;
+      let state, action = '';
+      if (!legCoords(a, c)) state = '<span class="seg-state">地点が未配置</span>';
+      else if (nVia) { state = '<span class="seg-state">曲がり角 ' + nVia + '</span>'; action = '<button class="mini" type="button" data-reset="' + esc(k) + '">直線に戻す</button>'; }
+      else if (p && p.ok) { state = '<span class="seg-state">直線</span>'; action = '<button class="mini" type="button" data-unok="' + esc(k) + '">取り消す</button>'; }
+      else { state = '<span class="seg-state is-todo">未調整</span>'; action = '<button class="mini" type="button" data-ok="' + esc(k) + '">直線でOK</button>'; }
+      return '<li><button class="seg-name" type="button" data-show="' + esc(k) + '">' + esc(a) + ' ⇄ ' + esc(c) + '</button>' + state + action + '</li>';
+    }).join('');
+
+    $('armed').hidden = !armed;
+    $('armedName').textContent = armed || '';
+    mapEl.classList.toggle('is-armed', !!armed);
+  }
+
+  $('placeList').addEventListener('click', e => {
+    const btn = e.target.closest('[data-place]');
+    if (!btn) return;
+    armed = btn.dataset.place;
+    if (hasCoord(armed)) map.panTo(ll(armed));
+    renderEditPanel();
+  });
+
+  $('armedCancel').addEventListener('click', () => { armed = null; renderEditPanel(); });
+
+  $('segList').addEventListener('click', e => {
+    const el = e.target.closest('button');
+    if (!el) return;
+    const d = el.dataset;
+    if (d.show) {
+      const [a, c] = d.show.split('|');
+      const coords = legCoords(a, c);
+      if (coords) map.fitBounds(L.latLngBounds(coords), { padding: [60, 60], maxZoom: 18 });
+      return;
+    }
+    if (d.ok) ensurePath(d.ok).ok = true;
+    if (d.unok) ensurePath(d.unok).ok = false;
+    if (d.reset) { const p = ensurePath(d.reset); p.via = []; p.ok = false; }
+    save();
+    renderEdit();
+  });
+
+  map.on('click', e => {
+    if (!editing || !armed) return;
+    const wasNew = !hasCoord(armed);
+    data.places[armed] = { lat: r6(e.latlng.lat), lng: r6(e.latlng.lng) };
+    armed = wasNew ? (PLACE_NAMES.find(n => !hasCoord(n)) || null) : null;
+    save();
+    renderEdit();
+  });
+
+  function exportData() {
+    const out = { places: {}, paths: {} };
+    PLACE_NAMES.forEach(n => { if (hasCoord(n)) out.places[n] = data.places[n]; });
+    Object.keys(data.paths).forEach(k => {
+      const p = data.paths[k];
+      if ((p.via && p.via.length) || p.ok) out.paths[k] = { via: p.via || [], ok: !!p.ok };
+    });
+    return JSON.stringify(out);
+  }
+
+  $('exportBtn').addEventListener('click', () => {
+    const json = exportData();
+    dataBox.value = json;
+    dataBox.select();
+    const done = () => { editMsg.textContent = 'コピーしました。HTML内の course-data に貼り付けると公開版に反映されます。'; };
+    if (navigator.clipboard) navigator.clipboard.writeText(json).then(done, () => { editMsg.textContent = '下の欄のデータをコピーしてください。'; });
+    else editMsg.textContent = '下の欄のデータをコピーしてください。';
+  });
+
+  $('importBtn').addEventListener('click', () => {
+    try {
+      const d = JSON.parse(dataBox.value);
+      if (!d || typeof d.places !== 'object') throw new Error('places');
+      data = { places: d.places, paths: d.paths || {} };
+      save();
+      renderEdit();
+      editMsg.textContent = '読み込みました。';
+    } catch (err) {
+      editMsg.textContent = '読み込めませんでした。「書き出す」で出力したデータをそのまま貼り付けてください。';
+    }
+  });
+
+  $('clearBtn').addEventListener('click', () => {
+    if (!confirm('このブラウザに保存した下書きを消して、HTMLに埋め込まれたデータに戻します。よろしいですか？')) return;
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* 何もしない */ }
+    location.reload();
+  });
+
+  function setEditing(on) {
+    editing = on;
+    document.body.classList.toggle('is-editing', on);
+    editToggle.textContent = on ? '編集を終える' : 'コース編集';
+    if (on) {
+      stopPlay(); setLive(false);
+      viewLayer.remove();
+      editLayer.addTo(map);
+      armed = PLACE_NAMES.find(n => !hasCoord(n)) || null;
+      editMsg.textContent = hasDraft ? 'このブラウザに保存された下書きを表示しています。' : '';
+      renderEdit();
+    } else {
+      armed = null;
+      mapEl.classList.remove('is-armed');
+      editLayer.remove();
+      viewLayer.addTo(map);
+      selectBlock(cur, { noFit: true });
+    }
+  }
+
+  editToggle.addEventListener('click', () => setEditing(!editing));
+
+  // ================= 開始 =================
+  setPlayIcon();
+  const lt = liveTarget();
+  if (lt) { selectBlock(lt.i, { t: lt.t }); setLive(true); }
+  else { selectBlock(0); setLive(false); }
+})();
+</script>
+</body>
+</html>
