@@ -48,4 +48,4 @@
 - お問い合わせ：ogaito30ningumi@gmail.com ／ Instagram [@ogaito30](https://www.instagram.com/ogaito30)
 - 掲載している写真・動画・文章の権利は小垣内参拾人組に帰属します
 
-Design: [OSAKANA DESIGN](https://osakana.design)
+Design: OSAKANA DESIGN
