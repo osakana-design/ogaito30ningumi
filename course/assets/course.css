@@ -1,0 +1,792 @@
+:root {
+  --enji: #6E1A26;
+  --enji-deep: #43101A;
+  --enji-pale: #F7ECEE;
+  --shiro: #FFFFFF;
+  --gofun: #F6F3F2;
+  --sumi: #1E1517;
+  --nezumi: #6E6264;
+  --sen: #E3DADB;
+  --mincho: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --gothic: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--shiro);
+  color: var(--sumi);
+  font-family: var(--gothic);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+button { font: inherit; color: inherit; }
+
+:focus-visible { outline: 3px solid var(--enji); outline-offset: 2px; }
+
+
+/* ---------- 見出し帯 ---------- */
+
+.top {
+  display: grid;
+  gap: .55rem;
+  padding: .8rem 1.25rem .7rem;
+  background: var(--enji-deep);
+  color: var(--shiro);
+}
+
+.top-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .2rem 1rem;
+}
+
+.days {
+  display: flex;
+  gap: .35rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.days a {
+  flex: none;
+  padding: .15rem .85rem;
+  border: 1px solid rgba(255, 255, 255, .35);
+  border-radius: 999px;
+  color: var(--shiro);
+  font-size: .78rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.days a:hover { background: rgba(255, 255, 255, .1); }
+
+.days a[aria-current="page"] {
+  border-color: var(--shiro);
+  background: var(--shiro);
+  color: var(--enji);
+  font-weight: 700;
+}
+
+.top-title { display: grid; line-height: 1.35; }
+
+.top-org {
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--mincho);
+  font-size: .75rem;
+  letter-spacing: .2em;
+  opacity: .72;
+}
+
+.top h1 {
+  margin: 0;
+  font-family: var(--mincho);
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: .08em;
+}
+
+.top-date {
+  font-size: .82rem;
+  letter-spacing: .04em;
+  opacity: .85;
+}
+
+.edit-toggle {
+  margin-left: auto;
+  padding: .3rem .9rem;
+  border: 1px solid rgba(255, 255, 255, .55);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--shiro);
+  font-size: .78rem;
+  cursor: pointer;
+}
+
+.edit-toggle[hidden] { display: none; }
+
+
+/* ---------- 地図とパネル ---------- */
+
+.layout { display: grid; }
+
+#map {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 50svh;
+  min-height: 280px;
+  background: var(--gofun);
+}
+
+.tiles-pale { filter: contrast(1.2) saturate(.85); }
+.tiles-std { filter: saturate(.55); }
+.tiles-photo { filter: saturate(.75) brightness(1.05); }
+
+.leaflet-control-layers {
+  border: 0 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .3) !important;
+  font-size: .75rem;
+}
+
+.leaflet-control-layers-expanded { padding: .3rem .6rem .3rem .4rem; }
+
+.leaflet-control-layers label { margin: .1rem 0; }
+
+.leaflet-control-layers input { accent-color: var(--enji); }
+
+.leaflet-container { font-family: var(--gothic); }
+
+#map.is-armed { cursor: crosshair; }
+
+.tile-notice {
+  max-width: 16rem;
+  padding: .6rem .8rem;
+  border-left: 3px solid var(--enji);
+  border-radius: 4px;
+  background: var(--shiro);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .25);
+  font-size: .78rem;
+  line-height: 1.6;
+}
+
+.panel { padding: 1rem 1.25rem 3rem; }
+
+@media (min-width: 52rem) {
+  body.course-page {
+    display: flex;
+    flex-direction: column;
+    height: 100svh;
+  }
+
+  .layout {
+    flex: 1;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr) 25rem;
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  #map {
+    position: relative;
+    height: 100%;
+  }
+
+  .panel {
+    overflow-y: auto;
+    border-left: 1px solid var(--sen);
+  }
+}
+
+
+/* ---------- 部の切り替え ---------- */
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(4.4rem, 1fr));
+  gap: .35rem;
+  margin-bottom: 1rem;
+}
+
+.tab {
+  display: grid;
+  padding: .4rem .2rem .45rem;
+  border: 1px solid var(--sen);
+  border-radius: 6px;
+  background: var(--shiro);
+  line-height: 1.35;
+  text-align: center;
+  cursor: pointer;
+}
+
+.tab b {
+  font-family: var(--mincho);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tab small {
+  font-size: .66rem;
+  color: var(--nezumi);
+}
+
+.tab[aria-selected="true"] {
+  background: var(--enji);
+  border-color: var(--enji);
+  color: var(--shiro);
+}
+
+.tab[aria-selected="true"] small { color: rgba(255, 255, 255, .8); }
+
+
+/* ---------- いまの予定 ---------- */
+
+.status {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .2rem 1rem;
+  align-items: center;
+  margin-bottom: .8rem;
+  padding: .85rem 1rem;
+  border-radius: 6px;
+  background: var(--gofun);
+}
+
+.status-time {
+  grid-row: 1 / 3;
+  font-family: var(--mincho);
+  font-weight: 800;
+  font-size: 2.1rem;
+  line-height: 1;
+  color: var(--enji);
+  font-variant-numeric: tabular-nums;
+}
+
+.status-text {
+  font-size: .9rem;
+  line-height: 1.6;
+}
+
+.status-text .when {
+  color: var(--nezumi);
+  font-size: .8rem;
+  margin-left: .2em;
+}
+
+.status-live {
+  justify-self: start;
+  font-size: .72rem;
+  color: var(--enji);
+  font-weight: 700;
+}
+
+.status-live::before {
+  content: "";
+  display: inline-block;
+  width: .5rem;
+  height: .5rem;
+  margin-right: .35rem;
+  border-radius: 50%;
+  background: var(--enji);
+  vertical-align: .05em;
+}
+
+.back-live {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: .78rem;
+  color: var(--enji);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.status-live[hidden],
+.back-live[hidden] { display: none; }
+
+
+/* ---------- 再生 ---------- */
+
+.player {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  margin-bottom: 1.2rem;
+}
+
+.play {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  border-radius: 50%;
+  background: var(--enji);
+  color: var(--shiro);
+  cursor: pointer;
+}
+
+.play svg { width: 1rem; height: 1rem; fill: currentColor; }
+
+.scrub { flex: 1; display: grid; gap: .1rem; }
+
+.scrub input { width: 100%; margin: 0; accent-color: var(--enji); }
+
+.scrub-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: .72rem;
+  color: var(--nezumi);
+  font-variant-numeric: tabular-nums;
+}
+
+.missing {
+  margin: 0 0 1rem;
+  padding: .6rem .8rem;
+  border-left: 3px solid var(--enji);
+  background: var(--enji-pale);
+  font-size: .8rem;
+}
+
+.missing[hidden] { display: none; }
+
+
+/* ---------- 予定表 ---------- */
+
+.tt {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--sen);
+}
+
+.tt-row {
+  display: grid;
+  grid-template-columns: 3.1rem 1fr auto;
+  gap: .6rem;
+  align-items: center;
+  width: 100%;
+  padding: .5rem .5rem;
+  border: 0;
+  border-bottom: 1px solid var(--sen);
+  background: none;
+  text-align: left;
+  font-size: .92rem;
+  cursor: pointer;
+}
+
+.tt-row:hover { background: var(--gofun); }
+
+.tt-row time {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.tt-row.is-past { color: var(--nezumi); }
+
+.tt-row.is-past .badge { opacity: .55; }
+
+.tt-row.is-next {
+  background: var(--enji-pale);
+  box-shadow: inset 3px 0 0 var(--enji);
+}
+
+.tt-rest {
+  padding: .7rem 0;
+  font-family: var(--mincho);
+  font-weight: 700;
+  font-size: .9rem;
+  text-align: center;
+  color: var(--enji);
+}
+
+.tt-rest small {
+  display: block;
+  font-family: var(--gothic);
+  font-weight: 400;
+  font-size: .76rem;
+  color: var(--nezumi);
+}
+
+.badge {
+  padding: .05rem .55rem;
+  border-radius: 999px;
+  font-size: .72rem;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.b-yari { background: var(--enji); color: var(--shiro); }
+.b-peko { border: 1px solid var(--enji); color: var(--enji); }
+.b-tome { background: var(--nezumi); color: var(--shiro); }
+.b-turn { border: 1px solid var(--sen); background: var(--gofun); }
+.b-plain { color: var(--nezumi); padding-inline: 0; }
+
+
+/* ---------- 凡例・注記 ---------- */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+  margin: 1.4rem 0 .6rem;
+  padding: 0;
+  list-style: none;
+  font-size: .78rem;
+  color: var(--nezumi);
+}
+
+.legend li { display: flex; align-items: center; gap: .4rem; }
+
+.sym {
+  display: inline-block;
+  width: .8rem;
+  height: .8rem;
+  border: 2.5px solid var(--enji);
+  border-radius: 50%;
+  background: var(--shiro);
+}
+
+.sym-yari { background: var(--enji); }
+
+.note {
+  margin: 0 0 1.6rem;
+  font-size: .76rem;
+  color: var(--nezumi);
+}
+
+.ouen {
+  display: grid;
+  padding: .9rem 1.1rem;
+  border-radius: 6px;
+  background: var(--enji);
+  color: var(--shiro);
+  text-decoration: none;
+  font-family: var(--mincho);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.ouen small {
+  font-family: var(--gothic);
+  font-weight: 400;
+  font-size: .78rem;
+  opacity: .82;
+}
+
+.ouen:hover { background: var(--enji-deep); }
+
+
+/* ---------- 地図上の表示 ---------- */
+
+.leaflet-tooltip.lbl {
+  padding: 0 .4rem;
+  border: 0;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+  color: var(--sumi);
+  font-size: .7rem;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.leaflet-tooltip.lbl::before { display: none; }
+
+.leaflet-tooltip.lbl-yari { color: var(--enji); }
+
+.leaflet-tooltip.lbl-dim { opacity: .55 !important; }
+
+.hide-labels .leaflet-tooltip.lbl { display: none; }
+
+.dj { position: relative; width: 34px; height: 34px; }
+
+.dj-body {
+  position: absolute;
+  inset: 8px;
+  border: 3px solid var(--shiro);
+  border-radius: 50%;
+  background: var(--enji);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .4);
+}
+
+.dj-dir { position: absolute; inset: 0; }
+
+.dj-dir::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 9px solid var(--enji);
+}
+
+.dj-dir.is-none { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .dj::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 2px solid var(--enji);
+    border-radius: 50%;
+    animation: pulse 1.8s ease-out infinite;
+  }
+}
+
+@keyframes pulse {
+  from { transform: scale(1); opacity: .8; }
+  to { transform: scale(2.3); opacity: 0; }
+}
+
+.pin {
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--shiro);
+  border-radius: 50%;
+  background: var(--enji);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .45);
+}
+
+.via {
+  width: 14px;
+  height: 14px;
+  border: 2.5px solid var(--enji);
+  border-radius: 3px;
+  background: var(--shiro);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}
+
+
+/* ---------- 編集モード ---------- */
+
+.edit-panel { display: none; }
+
+.is-editing .view-panel { display: none; }
+
+.is-editing .edit-panel { display: block; }
+
+.edit-panel h2 {
+  margin: 0 0 .5rem;
+  font-family: var(--mincho);
+  font-size: 1.15rem;
+  color: var(--enji);
+}
+
+.edit-panel h3 {
+  display: flex;
+  justify-content: space-between;
+  margin: 1.4rem 0 .4rem;
+  font-size: .9rem;
+}
+
+.edit-panel h3 span { font-weight: 400; color: var(--nezumi); }
+
+.edit-help {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: .8rem;
+  color: var(--nezumi);
+}
+
+.armed {
+  position: sticky;
+  top: 50svh;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  margin: 1rem 0 0;
+  padding: .6rem .8rem;
+  border-radius: 6px;
+  background: var(--enji);
+  color: var(--shiro);
+  font-size: .85rem;
+}
+
+@media (min-width: 52rem) { .armed { top: 0; } }
+
+.armed[hidden] { display: none; }
+
+.armed button {
+  flex: none;
+  padding: .15rem .7rem;
+  border: 1px solid rgba(255, 255, 255, .6);
+  border-radius: 999px;
+  background: none;
+  color: var(--shiro);
+  font-size: .75rem;
+  cursor: pointer;
+}
+
+.plist, .slist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--sen);
+  font-size: .86rem;
+}
+
+.plist button {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  width: 100%;
+  padding: .4rem .3rem;
+  border: 0;
+  border-bottom: 1px solid var(--sen);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.plist button:hover { background: var(--gofun); }
+
+.plist button.is-armed { background: var(--enji-pale); }
+
+.plist .dot {
+  flex: none;
+  width: .7rem;
+  height: .7rem;
+  border: 2px solid var(--nezumi);
+  border-radius: 50%;
+}
+
+.plist .dot.is-on { border-color: var(--enji); background: var(--enji); }
+
+.plist small { margin-left: auto; color: var(--nezumi); font-size: .72rem; }
+
+.slist li {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .35rem .3rem;
+  border-bottom: 1px solid var(--sen);
+}
+
+.seg-name {
+  flex: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.seg-state { font-size: .72rem; color: var(--nezumi); white-space: nowrap; }
+
+.seg-state.is-todo { color: var(--enji); font-weight: 700; }
+
+.mini {
+  flex: none;
+  padding: .1rem .6rem;
+  border: 1px solid var(--enji);
+  border-radius: 999px;
+  background: var(--shiro);
+  color: var(--enji);
+  font-size: .72rem;
+  cursor: pointer;
+}
+
+.edit-actions { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .5rem; }
+
+.edit-actions .mini { padding: .3rem .9rem; font-size: .8rem; }
+
+.edit-actions .mini-fill { background: var(--enji); color: var(--shiro); }
+
+.edit-panel textarea {
+  width: 100%;
+  padding: .5rem;
+  border: 1px solid var(--sen);
+  border-radius: 4px;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: .72rem;
+}
+
+.edit-msg { min-height: 1.4em; margin: .3rem 0 0; font-size: .78rem; color: var(--enji); }
+
+
+/* ---------- 行事・時刻未定 ---------- */
+
+.tt-ev {
+  padding: .45rem .5rem;
+  border-bottom: 1px solid var(--sen);
+  background: var(--gofun);
+  font-family: var(--mincho);
+  font-weight: 700;
+  font-size: .86rem;
+  color: var(--enji);
+}
+
+.tt-row time.is-est { color: var(--sen); font-weight: 400; }
+
+.status-ev {
+  display: block;
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--enji);
+}
+
+
+/* ---------- 日程一覧（/course/） ---------- */
+
+.index-main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.75rem 1.25rem 3rem;
+}
+
+.index-lead {
+  margin: 0 0 1.5rem;
+  font-size: .9rem;
+  color: var(--nezumi);
+}
+
+.day-list {
+  display: grid;
+  gap: .75rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.day-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: .2rem 1rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--sen);
+  border-radius: 6px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.day-card:hover { border-color: var(--enji); }
+
+.day-card b {
+  font-family: var(--mincho);
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: .06em;
+  color: var(--enji);
+}
+
+.day-card span { grid-column: 1; font-size: .86rem; color: var(--nezumi); }
+
+.day-card .go {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--enji);
+}
+
+.day-card.is-today {
+  border-color: var(--enji);
+  background: var(--enji-pale);
+}
+
+.today {
+  margin-left: .5rem;
+  padding: .05rem .55rem;
+  border-radius: 999px;
+  background: var(--enji);
+  color: var(--shiro);
+  font-family: var(--gothic);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  vertical-align: .25em;
+}

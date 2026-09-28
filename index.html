@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="js/ga.js"></script>
 <title>小垣内の祭りを、これからも。｜小垣内参拾人組</title>
 <meta name="description" content="大阪府熊取町・小垣内のだんじり祭。祭りを続け、参加したい人が参加できる環境を残すために、御花とオンライン寄附「オガファン」で応援をお願いしています。">
 <meta name="theme-color" content="#6E1A26">
@@ -63,8 +64,8 @@
       <h1 class="tate">小垣内の祭礼を未来へ。</h1>
       <p>小垣内参拾人組では<br>祭りを支えてくださる皆様からの<br>御寄附を受け付けています。</p>
       <div class="cta-row">
-        <a class="btn btn-enji" href="#ouen">御寄附の種類・方法</a>
-        <a class="btn btn-enji-line" href="#ogafan">オンラインで500円から</a>
+        <a class="btn btn-enji" data-ga="lead_ouen" href="#ouen">御寄附の種類・方法</a>
+        <a class="btn btn-enji-line" data-ga="lead_ogafan" href="#ogafan">オンラインで500円から</a>
       </div>
       <p class="lead-note">このページは、小垣内参拾人組への御花・御寄附の受付です。<br>小垣内区全体への御花は、祭礼当日に本部で受け付けています。</p>
     </div>
@@ -182,7 +183,7 @@
               <li><b>30,000円</b><span>バスタオル 3枚＋フェイスタオル 数枚</span></li>
             </ul>
             <p class="chui">参拾人組のメンバーに直接お声がけください。祭礼当日の受付は行いません。</p>
-            <a class="btn btn-enji" href="#shiranai">組に知り合いがいない方はこちら</a>
+            <a class="btn btn-enji" data-ga="ohana_shiranai" href="#shiranai">組に知り合いがいない方はこちら</a>
           </div>
         </article>
 
@@ -204,12 +205,12 @@
             <div class="plan">
               <b>500<small>円</small></b>
               <span>個人の方｜ご支援者一覧にお名前を掲載</span>
-              <a class="btn btn-white" href="https://donate.stripe.com/9B628lglT5q2fy8gWG8EM00">500円で応援する</a>
+              <a class="btn btn-white" data-ga="stripe_500" href="https://donate.stripe.com/9B628lglT5q2fy8gWG8EM00">500円で応援する</a>
             </div>
             <div class="plan">
               <b>10,000<small>円</small></b>
               <span>お店・事業者の方｜ご支援者一覧に店名・社名を大きく掲載</span>
-              <a class="btn btn-white" href="https://donate.stripe.com/28EbIVb1z05I4Tu0XI8EM01">10,000円で応援する</a>
+              <a class="btn btn-white" data-ga="stripe_10000" href="https://donate.stripe.com/28EbIVb1z05I4Tu0XI8EM01">10,000円で応援する</a>
             </div>
             <p class="chui">掲載名は決済ページの入力欄でご指定ください。掲載を希望されない場合はその旨をご記入ください。オガファンはタオルお返しの対象外です。</p>
           </div>
@@ -222,8 +223,8 @@
           <p>御花の受け渡し方法をこちらからご案内します。お気軽にご連絡ください。</p>
         </div>
         <div class="shiranai-links">
-          <a href="https://www.instagram.com/ogaito30">Instagramで連絡する</a>
-          <a href="mailto:ogaito30ningumi@gmail.com">メールで連絡する</a>
+          <a data-ga="contact_instagram" href="https://www.instagram.com/ogaito30">Instagramで連絡する</a>
+          <a data-ga="contact_mail" href="mailto:ogaito30ningumi@gmail.com">メールで連絡する</a>
         </div>
       </div>
     </div>
@@ -240,6 +241,7 @@
           <div><dt>決済代行</dt><dd>Stripe。カード情報はStripeの決済ページで処理され、参拾人組では取得も保管もしません。</dd></div>
           <div><dt>領収書</dt><dd>決済完了後、Stripeからご入力のメールアドレス宛に自動送信されます。</dd></div>
           <div><dt>キャンセル</dt><dd>寄附の性質上、決済後の返金は原則としてお受けできません。金額をご確認のうえお手続きください。</dd></div>
+          <div><dt>アクセス解析</dt><dd>サイトの利用状況の把握のため、Googleアナリティクスを使用しています。</dd></div>
           <div><dt>お問い合わせ</dt><dd><a href="mailto:ogaito30ningumi@gmail.com">ogaito30ningumi@gmail.com</a></dd></div>
         </dl>
       </details>
@@ -253,15 +255,15 @@
       <h2>今年の小垣内の祭りを、<br>一緒に支えてください。</h2>
       <p>10月4日の試験曳きから、いよいよ祭りがはじまります。</p>
       <div class="cta-row">
-        <a class="btn btn-white" href="#ogafan">オンラインで応援する</a>
-        <a class="btn btn-line" href="#ohana">御花の方法を見る</a>
+        <a class="btn btn-white" data-ga="closing_ogafan" href="#ogafan">オンラインで応援する</a>
+        <a class="btn btn-line" data-ga="closing_ohana" href="#ohana">御花の方法を見る</a>
       </div>
     </div>
   </section>
 
   <nav class="sns wrap" aria-label="参拾人組の発信">
-    <a href="https://www.instagram.com/ogaito30">Instagram ＠ogaito30</a>
-    <a href="https://youtube.com/@channka-channel">YouTube チャンカちゃんねる</a>
+    <a data-ga="sns_instagram" href="https://www.instagram.com/ogaito30">Instagram ＠ogaito30</a>
+    <a data-ga="sns_youtube" href="https://youtube.com/@channka-channel">YouTube チャンカちゃんねる</a>
   </nav>
 </main>
 
@@ -278,8 +280,8 @@
 </footer>
 
 <div class="mobile-cta" id="mobileCta">
-  <a class="btn btn-enji" href="#ogafan">オンラインで応援</a>
-  <a class="btn btn-enji-line" href="#ohana">御花について</a>
+  <a class="btn btn-enji" data-ga="mobile_ogafan" href="#ogafan">オンラインで応援</a>
+  <a class="btn btn-enji-line" data-ga="mobile_ohana" href="#ohana">御花について</a>
 </div>
 
 <script>
