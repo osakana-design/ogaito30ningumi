@@ -248,6 +248,43 @@
     </div>
   </section>
 
+  <!-- ==================== 昨年の祭礼 ==================== -->
+  <section class="douga-sec" id="douga">
+    <div class="wrap">
+      <div class="douga-head">
+        <p class="douga-year">令和七年度</p>
+        <h2 class="midashi">昨年の祭礼のようす。</h2>
+      </div>
+      <div class="douga-list">
+        <figure class="douga">
+          <div class="douga-frame">
+            <button class="douga-play" type="button" data-yt="vO7PAdxEJek" data-ga="video_r7_shiken" aria-label="令和七年度 試験曳きの動画を再生">
+              <img src="https://i.ytimg.com/vi/vO7PAdxEJek/hqdefault.jpg" width="480" height="360" alt="" loading="lazy" decoding="async">
+            </button>
+          </div>
+          <figcaption>試験曳き</figcaption>
+        </figure>
+        <figure class="douga">
+          <div class="douga-frame">
+            <button class="douga-play" type="button" data-yt="vRq9-M75ldk" data-ga="video_r7_day1" aria-label="令和七年度 本曳き1日目の動画を再生">
+              <img src="https://i.ytimg.com/vi/vRq9-M75ldk/hqdefault.jpg" width="480" height="360" alt="" loading="lazy" decoding="async">
+            </button>
+          </div>
+          <figcaption>本曳き 1日目</figcaption>
+        </figure>
+        <figure class="douga">
+          <div class="douga-frame">
+            <button class="douga-play" type="button" data-yt="9SPVAsVfGC4" data-ga="video_r7_day2" aria-label="令和七年度 本曳き2日目の動画を再生">
+              <img src="https://i.ytimg.com/vi/9SPVAsVfGC4/hqdefault.jpg" width="480" height="360" alt="" loading="lazy" decoding="async">
+            </button>
+          </div>
+          <figcaption>本曳き 2日目</figcaption>
+        </figure>
+      </div>
+      <p class="douga-more"><a data-ga="video_channel" href="https://youtube.com/@channka-channel">チャンカちゃんねるで他の動画を見る</a></p>
+    </div>
+  </section>
+
   <!-- ==================== クロージング ==================== -->
   <section class="closing">
     <img class="closing-bg" src="img/yoru.webp" width="1920" height="1080" alt="" loading="lazy" decoding="async">
@@ -291,6 +328,18 @@
   if(!('IntersectionObserver' in window)){cta.classList.add('show');return;}
   new IntersectionObserver(function(e){cta.classList.toggle('show',!e[0].isIntersecting);},{threshold:0}).observe(hero);
 })();
+
+// 動画はクリックされてからYouTubeを読み込む
+document.querySelectorAll('.douga-play').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + btn.dataset.yt + '?autoplay=1&playsinline=1&rel=0';
+    f.title = btn.getAttribute('aria-label').replace('の動画を再生', '');
+    f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    f.allowFullscreen = true;
+    btn.replaceWith(f);
+  });
+});
 </script>
 </body>
 </html>

@@ -1013,6 +1013,136 @@ p {
 }
 
 
+/* ---------- 昨年の祭礼（動画） ---------- */
+
+.douga-sec {
+  background: var(--gofun);
+  padding: clamp(4.5rem, 10vw, 8rem) 0;
+}
+
+.douga-head {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.douga-year {
+  font-family: var(--mincho);
+  font-weight: 500;
+  font-size: .8rem;
+  line-height: 1;
+  letter-spacing: .34em;
+  text-indent: .34em;
+  color: var(--nezumi);
+  margin: 0 0 1rem;
+}
+
+.douga-head .midashi {
+  margin: 0;
+}
+
+.douga-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.douga {
+  margin: 0;
+}
+
+.douga-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.douga-frame iframe,
+.douga-play {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.douga-play {
+  padding: 0;
+  background: #000;
+  cursor: pointer;
+}
+
+.douga-play img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: .82;
+  transition: opacity .2s, transform .4s;
+}
+
+.douga-play:hover img {
+  opacity: 1;
+  transform: scale(1.03);
+}
+
+/* 再生マーク */
+.douga-play::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  width: 3.6rem;
+  height: 3.6rem;
+  margin: -1.8rem 0 0 -1.8rem;
+  border-radius: 50%;
+  background: rgba(110, 26, 38, .88);
+  transition: background-color .2s;
+}
+
+.douga-play::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  border-style: solid;
+  border-width: .6rem 0 .6rem 1rem;
+  border-color: transparent transparent transparent var(--shiro);
+  transform: translate(-35%, -50%);
+}
+
+.douga-play:hover::before {
+  background: var(--enji);
+}
+
+.douga-play:focus-visible {
+  outline: 3px solid var(--shiro);
+  outline-offset: -6px;
+}
+
+.douga figcaption {
+  margin-top: .8rem;
+  font-family: var(--mincho);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: .08em;
+  text-align: center;
+}
+
+.douga-more {
+  margin: 2.5rem 0 0;
+  text-align: center;
+  font-size: .9rem;
+}
+
+.douga-more a {
+  color: var(--enji);
+  font-weight: 500;
+}
+
+
 /* ---------- クロージング ---------- */
 
 .closing {
@@ -1133,6 +1263,11 @@ footer .name {
   .hito-head {
     align-items: start;
     text-align: left;
+  }
+
+  .douga-list {
+    grid-template-columns: 1fr;
+    gap: 2rem;
   }
 }
 
