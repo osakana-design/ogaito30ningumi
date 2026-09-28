@@ -114,14 +114,20 @@ button { font: inherit; color: inherit; }
 
 /* ---------- 地図とパネル ---------- */
 
-.layout { display: grid; }
+/* 列の最小幅を0にしておく。auto のままだと横スクロールの時間帯ボタンの全幅までパネルが広がる */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* スマホでは地図を画面上部に固定する。高さは時間帯の切り替え行の固定位置にも使う */
+.course-page { --map-h: max(50svh, 280px); }
 
 #map {
   position: sticky;
   top: 0;
   z-index: 1;
-  height: 50svh;
-  min-height: 280px;
+  height: var(--map-h);
   background: var(--gofun);
 }
 
@@ -187,11 +193,15 @@ button { font: inherit; color: inherit; }
 
 /* ---------- 部の切り替え ---------- */
 
+.panel-head { margin-bottom: 1rem; }
+
+.map-toggle { display: none; }
+
 .tabs {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(4.4rem, 1fr));
   gap: .35rem;
-  margin-bottom: 1rem;
 }
 
 .tab {
@@ -326,6 +336,43 @@ button { font: inherit; color: inherit; }
   font-size: .72rem;
   color: var(--nezumi);
   font-variant-numeric: tabular-nums;
+}
+
+.speed {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin: -.4rem 0 1.2rem;
+}
+
+.speed-label {
+  font-size: .76rem;
+  color: var(--nezumi);
+}
+
+.speed-btns {
+  display: inline-flex;
+  border: 1px solid var(--sen);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.speed-btns button {
+  padding: .2rem .9rem;
+  border: 0;
+  background: var(--shiro);
+  font-size: .76rem;
+  cursor: pointer;
+}
+
+.speed-btns button + button { border-left: 1px solid var(--sen); }
+
+.speed-btns button:hover { background: var(--gofun); }
+
+.speed-btns button[aria-pressed="true"] {
+  background: var(--enji);
+  color: var(--shiro);
+  font-weight: 700;
 }
 
 .missing {
@@ -582,8 +629,8 @@ button { font: inherit; color: inherit; }
 
 .armed {
   position: sticky;
-  top: 50svh;
-  z-index: 2;
+  top: var(--map-h);
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -790,4 +837,93 @@ button { font: inherit; color: inherit; }
   font-weight: 700;
   letter-spacing: 0;
   vertical-align: .25em;
+}
+
+
+/* ---------- 前後の時間帯への移動 ---------- */
+
+.block-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem;
+  margin-top: 1rem;
+}
+
+.bn {
+  display: grid;
+  gap: .05rem;
+  padding: .6rem .9rem;
+  border: 1px solid var(--sen);
+  border-radius: 6px;
+  background: var(--shiro);
+  text-align: left;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.bn:hover { border-color: var(--enji); }
+
+.bn[hidden] { display: none; }
+
+.bn small { font-size: .72rem; color: var(--nezumi); }
+
+.bn b {
+  font-family: var(--mincho);
+  font-size: .95rem;
+  color: var(--enji);
+  font-variant-numeric: tabular-nums;
+}
+
+.bn-next { grid-column: 2; text-align: right; }
+
+
+/* ---------- スマホ：時間帯は横スクロール、地図の表示切り替え ---------- */
+
+@media (max-width: 51.99rem) {
+  .course-page.map-hidden { --map-h: 0px; }
+
+  .course-page.map-hidden #map { display: none; }
+
+  .panel-head {
+    position: sticky;
+    top: var(--map-h);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin: -1rem -1.25rem 1rem;
+    padding: .6rem 1.25rem;
+    border-bottom: 1px solid var(--sen);
+    background: var(--shiro);
+  }
+
+  .tabs {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab { flex: none; min-width: 4.3rem; }
+
+  .map-toggle {
+    display: grid;
+    place-items: center;
+    flex: none;
+    padding: .35rem .6rem;
+    border: 1px solid var(--enji);
+    border-radius: 6px;
+    background: var(--shiro);
+    color: var(--enji);
+    font-size: .7rem;
+    font-weight: 700;
+    line-height: 1.3;
+    cursor: pointer;
+  }
+
+  .is-editing .map-toggle { display: none; }
 }

@@ -29,7 +29,13 @@
   const STORE_KEY = 'ogaito30-course-data';
   const ENJI = '#6E1A26';
   const LABEL_ZOOM = 16;
-  const MS_PER_MIN = 250; // 再生速度：予定の1分を0.25秒で進める（大きくするほどゆっくり）
+  // 再生速度：予定の1分を何ミリ秒で進めるか（大きくするほどゆっくり）
+  const SPEEDS = [
+    { id: 'slow', label: '遅い', ms: 800 },
+    { id: 'normal', label: '普通', ms: 400 },
+    { id: 'fast', label: '速い', ms: 150 }
+  ];
+  const SPEED_KEY = 'ogaito30-course-speed';
   const FALLBACK_CENTER = [34.3984, 135.3644];
 
   // ================= 下ごしらえ =================
@@ -137,7 +143,7 @@
 <header class="top">
   <div class="top-row">
     <div class="top-title">
-      <a class="top-org" href="../">小垣内参拾人組 曳行コース</a>
+      <a class="top-org" href="../">小垣内 曳行コース</a>
       <h1>${esc(DAY.title)}</h1>
     </div>
     <span class="top-date">令和八年${esc(DAY.dateLabel)} ${BLOCKS[0].stops[0].time}〜${lastStop.time}</span>
@@ -150,7 +156,10 @@
   <div id="map" role="region" aria-label="曳行コースの地図"></div>
 
   <div class="panel">
-    <div class="tabs" id="tabs" role="tablist" aria-label="時間帯"></div>
+    <div class="panel-head">
+      <div class="tabs" id="tabs" role="tablist" aria-label="時間帯"></div>
+      <button class="map-toggle" id="mapToggle" type="button" aria-controls="map" aria-expanded="true">地図を<br>隠す</button>
+    </div>
 
     <div class="view-panel">
       <div class="status" aria-live="polite">
@@ -168,9 +177,19 @@
         </div>
       </div>
 
+      <div class="speed" role="group" aria-label="再生の速さ">
+        <span class="speed-label">再生の速さ</span>
+        <div class="speed-btns" id="speedBtns"></div>
+      </div>
+
       <p class="missing" id="missing" hidden></p>
 
       <ol class="tt" id="timetable"></ol>
+
+      <nav class="block-nav" aria-label="時間帯の移動">
+        <button class="bn bn-prev" id="prevBlock" type="button" data-ga="course_prev"></button>
+        <button class="bn bn-next" id="nextBlock" type="button" data-ga="course_next"></button>
+      </nav>
 
       <ul class="legend">
         <li><span class="badge b-yari">やりまわし</span></li>
@@ -215,6 +234,10 @@
     </div>
   </div>
 </div>`);
+
+  // 地図の表示・非表示（スマホのみ。選んだ状態はこのブラウザに記憶する）
+  const MAP_KEY = 'ogaito30-course-map';
+  try { if (localStorage.getItem(MAP_KEY) === 'hidden') document.body.classList.add('map-hidden'); } catch (e) { /* 保存領域が使えない環境 */ }
 
   // ================= 地図 =================
   const firstPt = PLACE_NAMES.find(hasCoord);
@@ -276,6 +299,28 @@
   let playing = false, lastTs = 0, heading = null;
   let live = false, editing = false, armed = null;
 
+  // 再生の速さ（選んだ速さはこのブラウザに記憶する）
+  let speed = SPEEDS[1];
+  try {
+    const saved = localStorage.getItem(SPEED_KEY);
+    speed = SPEEDS.find(s => s.id === saved) || speed;
+  } catch (e) { /* 保存領域が使えない環境 */ }
+
+  const speedBtns = $('speedBtns');
+  function renderSpeed() {
+    speedBtns.innerHTML = SPEEDS.map(s =>
+      '<button type="button" data-speed="' + s.id + '" data-ga="course_speed_' + s.id + '" aria-pressed="' + (s === speed) + '">' + s.label + '</button>'
+    ).join('');
+  }
+  speedBtns.addEventListener('click', e => {
+    const btn = e.target.closest('[data-speed]');
+    if (!btn) return;
+    speed = SPEEDS.find(s => s.id === btn.dataset.speed) || speed;
+    try { localStorage.setItem(SPEED_KEY, speed.id); } catch (err) { /* 保存不可 */ }
+    renderSpeed();
+  });
+  renderSpeed();
+
   function badge(s) {
     const ty = TYPES[s.type] || TYPES.straight;
     let txt = ty.label;
@@ -295,6 +340,31 @@
       '<button class="tab" role="tab" type="button" data-i="' + i + '" aria-selected="' + (i === cur) + '">' +
       '<b>' + b.stops[0].time + '</b><small>' + esc(b.sec) + '</small></button>'
     ).join('');
+    // 横スクロールのときは、選んだ時間帯を中央に寄せる
+    const sel = tabsEl.children[cur];
+    if (sel && tabsEl.scrollWidth > tabsEl.clientWidth) {
+      tabsEl.scrollTo({ left: sel.offsetLeft - (tabsEl.clientWidth - sel.offsetWidth) / 2, behavior: 'smooth' });
+    }
+  }
+
+  const range = b => b.stops[0].time + '〜' + b.stops[b.stops.length - 1].time;
+
+  function renderBlockNav() {
+    const prev = BLOCKS[cur - 1], next = BLOCKS[cur + 1];
+    const pb = $('prevBlock'), nb = $('nextBlock');
+    pb.hidden = !prev;
+    nb.hidden = !next;
+    if (prev) pb.innerHTML = '<small>← 前の時間帯</small><b>' + range(prev) + '</b>';
+    if (next) nb.innerHTML = '<small>次の時間帯 →</small><b>' + range(next) + '</b>';
+  }
+
+  // 予定表の先頭が隠れていたら、そこまで戻す
+  function scrollToPanelTop() {
+    const panel = document.querySelector('.panel');
+    if (matchMedia('(min-width: 52rem)').matches) { panel.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    const offset = (mapVisible() ? mapEl.offsetHeight : 0) + document.querySelector('.panel-head').offsetHeight;
+    const top = document.querySelector('.view-panel').getBoundingClientRect().top;
+    if (top < offset) window.scrollTo({ top: Math.max(0, top + window.scrollY - offset - 8), behavior: 'smooth' });
   }
 
   function renderTimetable() {
@@ -345,7 +415,11 @@
     return pts.length ? L.latLngBounds(pts) : null;
   }
 
+  const mapVisible = () => mapEl.offsetHeight > 0;
+  let pendingFit = false;
+
   function fitBlock() {
+    if (!mapVisible()) { pendingFit = true; return; }
     const bd = blockBounds(BLOCKS[cur]);
     if (!bd) return;
     if (bd.getNorthEast().equals(bd.getSouthWest())) map.setView(bd.getCenter(), 17);
@@ -364,6 +438,7 @@
       baseLine.setLatLngs(legs.filter(l => l.coords && l.len > 0).map(l => l.coords));
       renderStops();
       renderTimetable();
+      renderBlockNav();
       renderMissing();
       scrub.min = b.start;
       scrub.max = b.end;
@@ -459,7 +534,7 @@
 
   function tick(ts) {
     if (!playing) return;
-    if (lastTs) t += (ts - lastTs) / MS_PER_MIN;
+    if (lastTs) t += (ts - lastTs) / speed.ms;
     lastTs = ts;
     if (t >= BLOCKS[cur].end) { t = BLOCKS[cur].end; playing = false; setPlayIcon(); }
     update();
@@ -513,7 +588,32 @@
     if (!btn) return;
     stopPlay(); userTookOver();
     selectBlock(+btn.dataset.i);
+    if (!editing) scrollToPanelTop();
   });
+
+  function stepBlock(d) {
+    const i = cur + d;
+    if (!BLOCKS[i]) return;
+    stopPlay(); userTookOver();
+    selectBlock(i);
+    scrollToPanelTop();
+  }
+  $('prevBlock').addEventListener('click', () => stepBlock(-1));
+  $('nextBlock').addEventListener('click', () => stepBlock(1));
+
+  const mapToggle = $('mapToggle');
+  function setMapHidden(hidden, remember) {
+    document.body.classList.toggle('map-hidden', hidden);
+    mapToggle.innerHTML = hidden ? '地図を<br>表示' : '地図を<br>隠す';
+    mapToggle.setAttribute('aria-expanded', String(!hidden));
+    if (remember) { try { localStorage.setItem(MAP_KEY, hidden ? 'hidden' : 'shown'); } catch (e) { /* 保存不可 */ } }
+    if (!hidden) {
+      map.invalidateSize();
+      if (pendingFit) { pendingFit = false; fitBlock(); }
+    }
+  }
+  mapToggle.addEventListener('click', () => setMapHidden(!document.body.classList.contains('map-hidden'), true));
+  setMapHidden(document.body.classList.contains('map-hidden'), false);
 
   scrub.addEventListener('input', () => { stopPlay(); userTookOver(); t = +scrub.value; update(); });
 
@@ -737,6 +837,7 @@
     document.body.classList.toggle('is-editing', on);
     editToggle.textContent = on ? '編集を終える' : 'コース編集';
     if (on) {
+      if (document.body.classList.contains('map-hidden')) setMapHidden(false, false);
       stopPlay(); setLive(false);
       viewLayer.remove();
       editLayer.addTo(map);
