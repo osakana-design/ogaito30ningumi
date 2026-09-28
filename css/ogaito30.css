@@ -233,6 +233,24 @@ p {
   color: rgba(255, 255, 255, .7);
 }
 
+.hero-course {
+  display: inline-block;
+  margin-top: 1.2rem;
+  padding: .45rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, .55);
+  border-radius: 999px;
+  font-size: .82rem;
+  line-height: 1.4;
+  letter-spacing: .08em;
+  text-decoration: none;
+  color: rgba(255, 255, 255, .92);
+  transition: background .2s ease;
+}
+
+.hero-course:hover {
+  background: rgba(255, 255, 255, .12);
+}
+
 
 /* スクロールを促すサイン */
 
