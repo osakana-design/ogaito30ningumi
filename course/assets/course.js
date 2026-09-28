@@ -23,7 +23,8 @@
     backu: { label: 'バックUターン', cls: 'b-turn' },
     straight: { label: '直進', cls: 'b-plain' },
     dep: { label: '発', cls: 'b-plain' },
-    arr: { label: '着', cls: 'b-plain' }
+    arr: { label: '着', cls: 'b-plain' },
+    event: { label: '', cls: 'b-ev' }
   };
   const STORE_KEY = 'ogaito30-course-data';
   const ENJI = '#6E1A26';
@@ -68,8 +69,8 @@
 
   const PLACE_NAMES = [];
   BLOCKS.forEach(b => b.stops.forEach(s => { if (!PLACE_NAMES.includes(s.pt)) PLACE_NAMES.push(s.pt); }));
-  // 表示名とは別の補助地点（例：脇道にバックで入る位置）。地図に印を付けない
-  const isAux = s => s.pt !== s.place && PLACE_NAMES.includes(s.place);
+  // 「表示名・○○」の補助地点（例：脇道にバックで入る位置）。地図に印を付けない
+  const isAux = s => s.pt.indexOf(s.place + '・') === 0;
 
   // ================= データ（座標・経路） =================
   let data = JSON.parse(JSON.stringify(window.COURSE_DATA || { places: {}, paths: {} }));
@@ -180,7 +181,7 @@
       </ul>
       <p class="note">※曳行の都合により、コースおよび時間が前後する場合があります。地図上の位置は予定表から割り出した目安です。</p>
 
-      <a class="ouen" data-ga="day_ouen" href="https://osakana-design.github.io/ogaito30ningumi/">小垣内参拾人組を応援する<small>御花・オンライン寄附「オガファン」</small></a>
+      <a class="ouen" href="https://osakana-design.github.io/ogaito30ningumi/">小垣内参拾人組を応援する<small>御花・オンライン寄附「オガファン」</small></a>
     </div>
 
     <div class="edit-panel">
@@ -278,7 +279,7 @@
   function badge(s) {
     const ty = TYPES[s.type] || TYPES.straight;
     let txt = ty.label;
-    if (s.type === 'turn') txt = s.dir;
+    if (s.type === 'turn' || s.type === 'event') txt = s.dir;
     else if ((s.type === 'yari' || s.type === 'peko' || s.type === 'tome') && s.dir) txt = ty.label + '・' + s.dir;
     return txt ? '<span class="badge ' + ty.cls + '">' + esc(txt) + '</span>' : '';
   }
@@ -427,7 +428,7 @@
     if (ev) html += '<span class="status-ev">『' + esc(ev.ev) + '』</span>';
     else if (b.title && t < b.end - 1e-6) html += '<span class="status-ev">『' + esc(b.title) + '』</span>';
     if (t >= b.end - 1e-6) {
-      html += '<b>' + esc(last.place) + '</b> 着<br><span class="when">' + afterBlockText(b) + '</span>';
+      html += '<b>' + esc(last.place) + '</b> ' + (last.type === 'arr' ? '着' : badge(last)) + '<br><span class="when">' + afterBlockText(b) + '</span>';
     } else {
       const at = b.stops.find(s => Math.abs(s.t - t) < 1e-6);
       const next = b.stops.find(s => s.t > t + 1e-6);

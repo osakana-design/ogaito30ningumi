@@ -409,6 +409,7 @@ button { font: inherit; color: inherit; }
 .b-tome { background: var(--nezumi); color: var(--shiro); }
 .b-turn { border: 1px solid var(--sen); background: var(--gofun); }
 .b-plain { color: var(--nezumi); padding-inline: 0; }
+.b-ev { border: 1px solid var(--enji); background: var(--enji-pale); color: var(--enji); font-weight: 700; }
 
 
 /* ---------- 凡例・注記 ---------- */
